@@ -12,9 +12,10 @@ for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
 done
 
 # zplug
+<https://qiita.com/devzooiiooz/items/a5f8fc33dee214f60f4e>
+
 brew install zplug
 
-<https://qiita.com/devzooiiooz/items/a5f8fc33dee214f60f4e>
 cd ~/.zprezto/modules/prompt/external/pure
 
 cp pure.zsh pure.zsh_bak
