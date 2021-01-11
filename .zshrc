@@ -53,8 +53,8 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # pure
-autoload -Uz promptinit && promptinit
-prompt pure
+# autoload -Uz promptinit && promptinit
+# prompt pure
 
 # 未インストールのプラグインがあるときのみインストールする
 if ! zplug check --verbose; then
