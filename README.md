@@ -31,3 +31,7 @@ cd ~/dotfiles
 chmod +x install.sh
 
 ./install.sh
+
+# cd 補完
+
+<https://liginc.co.jp/448630>

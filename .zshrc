@@ -3,6 +3,7 @@ export PATH="/usr/local/opt/php@7.4/bin:$PATH"
 export PATH="/usr/local/opt/php@7.4/sbin:$PATH"
 export PATH="/usr/local/opt/mysql@5.7/bin:$PATH"
 export PATH="/usr/local/opt/node@12/bin:$PATH"
+export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 
 # alias 
 alias la="ls -a"
@@ -10,10 +11,25 @@ alias ll="ls -lh"
 alias ls='ls -G'
 export LSCOLORS=gxfxcxdxbxegedabagacad
 
-PROMPT='[%n@%m]# '
-RPROMPT='[%d]'
-RPROMPT="%{${fg[blue]}%}[%~]%{${reset_color}%}"
-RPROMPT=$RPROMPT'${vcs_info_msg_0_}'
+# cdの後にlsを実行
+#Mac用の設定
+export CLICOLOR=1
+function chpwd() { ls -A -G -F}
+
+autoload -Uz vcs_info
+setopt prompt_subst
+
+zstyle ':vcs_info:git:*' check-for-changes true
+zstyle ':vcs_info:git:*' stagedstr "%F{yellow}!"
+zstyle ':vcs_info:git:*' unstagedstr "%F{red}+"
+zstyle ':vcs_info:*' formats "%F{green}%c%u[%b]%f"
+zstyle ':vcs_info:*' actionformats '[%b|%a]'
+precmd(){ vcs_info }
+
+# PROMPT='[%n@%m]# '
+# RPROMPT='[%d]'
+# RPROMPT="%{${fg[blue]}%}[%~]%{${reset_color}%}"
+ RPROMPT=$RPROMPT'${vcs_info_msg_0_}'
 
 # zplugの設定
 export ZPLUG_HOME=/usr/local/opt/zplug
@@ -69,3 +85,23 @@ zplug load --verbose
 # >>>実行
 export PURE_HOME=$HOME"/.zprezto/modules/prompt/external/pure"
 source $PURE_HOME/pure.zsh
+source /usr/local/src/enhancd/init.sh
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/hirotoshikawabuchi/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/hirotoshikawabuchi/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/hirotoshikawabuchi/opt/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/hirotoshikawabuchi/opt/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
