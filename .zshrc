@@ -1,9 +1,7 @@
 export ZSH_DISABLE_COMPFIX=true
-export PATH="/usr/local/opt/php@7.4/bin:$PATH"
-export PATH="/usr/local/opt/php@7.4/sbin:$PATH"
-export PATH="/usr/local/opt/mysql@5.7/bin:$PATH"
-export PATH="/usr/local/opt/node@12/bin:$PATH"
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+
+export PATH=$PATH:'/mnt/c/Users/hirotoshikawabuchi/AppData/Local/Programs/Microsoft VS Code/bin'
 
 # alias 
 alias la="ls -a"
@@ -18,6 +16,7 @@ function chpwd() { ls -A -G -F}
 
 autoload -Uz vcs_info
 setopt prompt_subst
+setopt nonomatch
 
 zstyle ':vcs_info:git:*' check-for-changes true
 zstyle ':vcs_info:git:*' stagedstr "%F{yellow}!"
@@ -29,12 +28,12 @@ precmd(){ vcs_info }
 # PROMPT='[%n@%m]# '
 # RPROMPT='[%d]'
 # RPROMPT="%{${fg[blue]}%}[%~]%{${reset_color}%}"
- RPROMPT=$RPROMPT'${vcs_info_msg_0_}'
+RPROMPT=$RPROMPT'${vcs_info_msg_0_}'
 
 # zplugの設定
-export ZPLUG_HOME=/usr/local/opt/zplug
+export ZPLUG_HOME=/opt/homebrew/opt/zplug
 source $ZPLUG_HOME/init.zsh
-
+ 
 # zshのフレームワーク
 zplug "sorin-ionescu/prezto"
 
@@ -69,7 +68,8 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # pure
-# autoload -Uz promptinit && promptinit
+# autoload -Uz promptinit
+# promptinit
 # prompt pure
 
 # 未インストールのプラグインがあるときのみインストールする
@@ -85,23 +85,34 @@ zplug load --verbose
 # >>>実行
 export PURE_HOME=$HOME"/.zprezto/modules/prompt/external/pure"
 source $PURE_HOME/pure.zsh
-source /usr/local/src/enhancd/init.sh
+source ~/enhancd/init.sh
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
+
 eval "$(pyenv init -)"
+export PATH="~/anaconda3/bin:$PATH"
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/hirotoshikawabuchi/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+__conda_setup="$('/Users/hirotoshikawabuchi/miniforge3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/Users/hirotoshikawabuchi/opt/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/hirotoshikawabuchi/opt/anaconda3/etc/profile.d/conda.sh"
+    if [ -f "/Users/hirotoshikawabuchi/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/Users/hirotoshikawabuchi/miniforge3/etc/profile.d/conda.sh"
     else
-        export PATH="/Users/hirotoshikawabuchi/opt/anaconda3/bin:$PATH"
+        export PATH="/Users/hirotoshikawabuchi/miniforge3/bin:$PATH"
     fi
 fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export PATH="/opt/homebrew/opt/mysql@5.7/bin:$PATH"
+export PATH="/opt/homebrew/opt/php@7.4/bin:$PATH"
+export PATH="/opt/homebrew/opt/php@7.4/sbin:$PATH"
