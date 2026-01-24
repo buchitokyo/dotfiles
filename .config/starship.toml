@@ -6,7 +6,7 @@ add_newline = true
 
 # ref https://github.com/starship/starship/discussions/1107?sort=top#discussioncomment-10214050
 format = """
-[╭{owo} ](bold green)$username$directory$battery$all$line_break$character"""
+[╭🌝 ](bold green)$username$directory$battery$all$line_break$character"""
 
 [character]
 success_symbol = '[╰─>](bold green)'
@@ -32,7 +32,7 @@ renamed = "[R${count} ](fg:208)"
 deleted = "[ ${count} ](fg:208)"
 untracked = "[?${count} ](fg:red)"
 up_to_date = '[✓](bold green)'
-stashed = " ${count} "
+stashed = "[📦${count} ](fg:cyan)"
 ahead = "[ ${count} ](fg:purple)"
 behind = "[ ${count} ](fg:yellow)"
 diverged = "[](fg:88)[  נּ ](fg:white bg:88)[ ${ahead_count} ](fg:purple bg:88)[ ${behind_count} ](fg:yellow bg:88)[ ](fg:88)"
