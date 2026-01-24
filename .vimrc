@@ -23,6 +23,23 @@ set history=10000
 " ============================================
 set number
 set relativenumber          " 相対行番号（5jで5行移動など便利）
+
+" モードに応じて行番号表示を切り替え
+augroup NumberToggle
+  autocmd!
+  " ノーマルモード: 相対行番号
+  autocmd InsertLeave,WinEnter,BufEnter * if &number | set relativenumber | endif
+  " 挿入モード: 絶対行番号
+  autocmd InsertEnter,WinLeave,BufLeave * if &number | set norelativenumber | endif
+augroup END
+
+" ビジュアルモード: 絶対行番号に切り替え
+nnoremap <silent> v :set norelativenumber<CR>v
+nnoremap <silent> V :set norelativenumber<CR>V
+nnoremap <silent> <C-v> :set norelativenumber<CR><C-v>
+" ビジュアルモード終了時: 相対行番号に戻す
+vnoremap <silent> <Esc> <Esc>:set relativenumber<CR>
+
 set cursorline
 " set cursorcolumn          " 縦線は重くなるのでコメントアウト
 set virtualedit=onemore
