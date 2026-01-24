@@ -1,26 +1,49 @@
-# ~/.config/starship.toml
+# エディターの補完を設定スキーマに合わせて取得
+"$schema" = 'https://starship.rs/config-schema.json'
 
-# Pure風のシンプルなプロンプト
+# シェルのプロンプトの間に空行を挿入する
+add_newline = true
+
+# ref https://github.com/starship/starship/discussions/1107?sort=top#discussioncomment-10214050
 format = """
-$directory$git_branch$git_status
-$character"""
+[╭{owo} ](bold green)$username$directory$battery$all$line_break$character"""
 
 [character]
-success_symbol = "[❯](purple)"
-error_symbol = "[❯](red)"
+success_symbol = '[╰─>](bold green)'
+error_symbol = '[╰─>](bold green)'
 
-[directory]
-style = "blue"
-truncation_length = 0
-truncate_to_repo = false
+[status]
+disabled = false
+style = "red"
+symbol = " \\(╯°□°）╯︵ ┻━┻ "
+format = "\b[$symbol$status](fg:$style)"
 
 [git_branch]
-format = "[$branch]($style) "
-style = "gray"
+format = '[$symbol$branch(:$remote_branch) ]($style)'
 
+# ref https://github.com/starship/starship/discussions/1107#discussioncomment-345147
 [git_status]
-format = '([$all_status$ahead_behind]($style))'
-style = "red"
-staged = "[+](yellow)"
-modified = "[!](red)"
-untracked = "[?](blue)"
+style = "#f05133"
+format = "($conflicted$staged$modified$renamed$deleted$untracked$stashed$ahead_behind\b )"
+conflicted = "[ ](fg:88)[   ${count} ](fg:white bg:88)[ ](fg:88)"
+staged = "[M$count ](fg:green)"
+modified = "[M${count} ](fg:red)"
+renamed = "[R${count} ](fg:208)"
+deleted = "[ ${count} ](fg:208)"
+untracked = "[?${count} ](fg:red)"
+up_to_date = '[✓](bold green)'
+stashed = " ${count} "
+ahead = "[ ${count} ](fg:purple)"
+behind = "[ ${count} ](fg:yellow)"
+diverged = "[](fg:88)[  נּ ](fg:white bg:88)[ ${ahead_count} ](fg:purple bg:88)[ ${behind_count} ](fg:yellow bg:88)[ ](fg:88)"
+
+[time]
+disabled = false
+format = '🕙 [$time]($style) '
+time_format = '%m/%d %R'
+
+[aws]
+disabled = true
+
+[gcloud]
+disabled = true
