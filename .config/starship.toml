@@ -50,3 +50,6 @@ disabled = true
 
 [python]
 disabled = true
+
+[bun]
+disabled = true
