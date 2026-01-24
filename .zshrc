@@ -42,20 +42,25 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 # ============================================
-# ls / ディレクトリ移動
+# eza (ls の代替)
 # ============================================
-export CLICOLOR=1
-export LSCOLORS=gxfxcxdxbxegedabagacad
-
-alias la="ls -a"
-alias ll="ls -lh"
-alias ls='ls -G'
+alias ei="eza --icons --git"
+alias ea="eza -a --icons --git"
+alias ee="eza -aahl --icons --git"
+alias et="eza -T -L 3 -a -I 'node_modules|.git|.cache' --icons"
+alias eta="eza -T -a -I 'node_modules|.git|.cache' --color=always --icons | less -r"
+alias ls=ei
+alias la=ea
+alias ll=ee
+alias lt=et
+alias lta=eta
+alias l="clear && ls"
 
 # 天気予報
 alias wttr='(){ curl -H "Accept-Language: ${LANG%_*}" --compressed "wttr.in/${1:-Tokyo}" }'
 
 # cd後に自動でls
-function chpwd() { ls -A -G -F }
+function chpwd() { eza -a --icons }
 
 # ============================================
 # Sheldon (プラグイン) - キャッシュ版
@@ -70,13 +75,6 @@ if [[ ! -r "$sheldon_cache" || "$sheldon_toml" -nt "$sheldon_cache" ]]; then
 fi
 source "$sheldon_cache"
 
-# ============================================
-# キーバインド (history-substring-search用)
-# ============================================
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
-bindkey '^P' history-substring-search-up
-bindkey '^N' history-substring-search-down
 
 # ============================================
 # Starship プロンプト
@@ -116,5 +114,14 @@ fi
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# 履歴
+function select-history() {
+  BUFFER=$(history -n -r 1 | fzf --no-sort +m)
+  zle clear-screen
+}
+
+zle -N select-history
+bindkey "^h" select-history
 
 
