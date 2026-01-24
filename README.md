@@ -1,37 +1,102 @@
-# FLOW
-clone後
+# dotfiles
 
-# prezto
-git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+## セットアップ手順
 
-# terminal
-setopt EXTENDED_GLOB
-for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
-  ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
-done
+### 1. リポジトリをクローン
 
-# zplug
-<https://qiita.com/devzooiiooz/items/a5f8fc33dee214f60f4e>
+```zsh
+git clone https://github.com/YOUR_USERNAME/dotfiles.git ~/dotfiles
+```
 
-brew install zplug
+### 2. Homebrew インストール（未インストールの場合）
 
-cd ~/.zprezto/modules/prompt/external/pure
+```zsh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
 
-cp pure.zsh pure.zsh_bak
+### 3. Sheldon と Starship をインストール
 
-cat pure.zsh_bak | grep ❯
+```zsh
+brew install sheldon starship
+```
 
-３箇所書き換える
+### 4. dotfiles をインストール
 
-"PURE_PROMPT_SYMBOL:-%B%F{1}❯%F{3}❯%F{2}❯%f%b"
-
-# dotfiles内で
+```zsh
 cd ~/dotfiles
-
 chmod +x install.sh
-
 ./install.sh
+```
 
-# cd 補完
+### 5. 新しいシェルを起動
 
-<https://liginc.co.jp/448630>
+```zsh
+exec zsh
+```
+
+## ファイル構成
+
+```
+dotfiles/
+├── .zshrc                      # zsh設定
+├── .config/
+│   ├── sheldon/
+│   │   └── plugins.toml        # プラグイン管理
+│   └── starship.toml           # プロンプト設定
+├── .vimrc                      # vim設定
+├── .gvimrc                     # gvim設定
+├── .vim/                       # vimプラグイン等
+└── install.sh                  # インストールスクリプト
+```
+
+## 使用ツール
+
+| ツール | 用途 |
+|--------|------|
+| [Sheldon](https://github.com/rossmacarthur/sheldon) | zshプラグイン管理（Rust製、高速） |
+| [Starship](https://starship.rs/) | プロンプト（Rust製、高速） |
+
+## プラグイン一覧
+
+- zsh-autosuggestions（入力補完候補）
+- zsh-syntax-highlighting（シンタックスハイライト）
+- zsh-completions（追加の補完）
+- zsh-history-substring-search（履歴検索）
+- enhancd（cd強化）
+
+## カスタマイズ
+
+### プロンプトの変更
+
+`~/.config/starship.toml` を編集
+
+参考: https://starship.rs/config/
+
+### プラグインの追加
+
+`~/.config/sheldon/plugins.toml` を編集後、キャッシュを削除:
+
+```zsh
+rm ~/.cache/sheldon.zsh
+exec zsh
+```
+
+## トラブルシューティング
+
+### `command not found: brew`
+
+Homebrew のパスが通っていない。以下を実行:
+
+```zsh
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+### 起動が遅い場合
+
+起動時間を計測:
+
+```zsh
+time zsh -i -c exit
+```
+
+50〜100ms程度が目安。

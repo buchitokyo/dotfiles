@@ -1,92 +1,202 @@
-" setting
-"文字コードをUFT-8に設定
+" ============================================
+" 基本設定
+" ============================================
 set fenc=utf-8
-" バックアップファイルを作らない
+set encoding=utf-8
 set nobackup
-" スワップファイルを作らない
 set noswapfile
-" 編集中のファイルが変更されたら自動で読み直す
 set autoread
-" バッファが編集中でもその他のファイルを開けるように
 set hidden
-" 入力中のコマンドをステータスに表示する
 set showcmd
-" 新しい行のインデントを現在行と同じにする
 set autoindent
-
-
-" 見た目系
-" 行番号を表示
-set number
-" 現在の行を強調表示
-set cursorline
-" 現在の行を強調表示（縦）
-set cursorcolumn
-" 行末の1文字先までカーソルを移動できるように
-set virtualedit=onemore
-" インデントはスマートインデント
 set smartindent
-" ビープ音を可視化
-set visualbell
-" 括弧入力時の対応する括弧を表示
-set showmatch
-" ステータスラインを常に表示
-set laststatus=2
-" コマンドラインの補完
-set wildmode=list:longest
-" 折り返し時に表示行単位での移動できるようにする
-nnoremap j gj
-nnoremap k gk
-" シンタックスハイライトの有効化
-syntax enable
-syntax on
-set background=dark
 
+" undo永続化
+set undofile
+set undodir=~/.vim/undo
 
-" Tab系
-" 不可視文字を可視化(タブが「▸-」と表示される)
-set list listchars=tab:\▸\-
-" Tab文字を半角スペースにする
-set expandtab
-" 行頭以外のTab文字の表示幅（スペースいくつ分）
-set tabstop=2
-" 行頭でのTab文字の表示幅
-set shiftwidth=2
-
-
-" 検索系
-" 検索文字列が小文字の場合は大文字小文字を区別なく検索する
-set ignorecase
-" 検索文字列に大文字が含まれている場合は区別して検索する
-set smartcase
-" 検索文字列入力時に順次対象文字列にヒットさせる
-set incsearch
-" 検索時に最後まで行ったら最初に戻る
-set wrapscan
-" 検索語をハイライト表示
-set hlsearch
-" ESC連打でハイライト解除
-nmap <Esc><Esc> :nohlsearch<CR><Esc>
-
-"===== マウス設定 =====
-set mouse=a
-set ttymouse=xterm2
-
-
-"入力モード時のカーソル移動
-inoremap <C-j> <Down>
-inoremap <C-k> <Up>
-inoremap <C-h> <Left>
-inoremap <C-l> <Right>
-
-"jキーを二度押しでESCキー
-inoremap <silent> jj <Esc>
-inoremap <silent> っj <ESC>
-
-"===== その他 =====
-"履歴を10000件保存
+" 履歴
 set history=10000
 
-"カラースキーマの適用
+" ============================================
+" 見た目
+" ============================================
+set number
+set relativenumber          " 相対行番号（5jで5行移動など便利）
+set cursorline
+" set cursorcolumn          " 縦線は重くなるのでコメントアウト
+set virtualedit=onemore
+set visualbell
+set showmatch
+set matchtime=1             " 括弧マッチを0.1秒で表示
+set laststatus=2
+set scrolloff=5             " スクロール時に上下5行確保
+set sidescrolloff=5
+set wrap                    " 行の折り返し
+set display=lastline        " 長い行も表示
+
+" シンタックス
+syntax enable
+set background=dark
 colorscheme molokai
+
+" ============================================
+" ステータスライン（プラグインなし）
+" ============================================
+set statusline=%F                           " ファイル名
+set statusline+=%m                          " 変更あり [+]
+set statusline+=%r                          " 読み取り専用 [RO]
+set statusline+=%h                          " ヘルプ
+set statusline+=%w                          " プレビュー
+set statusline+=%=                          " 右寄せ
+set statusline+=[%{&fileencoding}]          " 文字コード
+set statusline+=[%{&fileformat}]            " 改行コード
+set statusline+=[%Y]                        " ファイルタイプ
+set statusline+=\ %l/%L                     " 行番号/総行数
+set statusline+=\ (%p%%)                    " 割合
+
+" ============================================
+" Tab / インデント
+" ============================================
+set expandtab
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+set list listchars=tab:▸\ ,trail:·,extends:»,precedes:«
+
+" ============================================
+" 検索
+" ============================================
+set ignorecase
+set smartcase
+set incsearch
+set wrapscan
+set hlsearch
+
+" ============================================
+" クリップボード
+" ============================================
+set clipboard=unnamed,unnamedplus
+
+" ============================================
+" マウス
+" ============================================
+set mouse=a
+if !has('nvim')
+  set ttymouse=sgr          " xterm2より新しい形式
+endif
+
+" ============================================
+" 補完
+" ============================================
+set wildmode=list:longest,full
+set wildmenu
+set completeopt=menuone,noinsert
+
+" ============================================
+" キーマッピング
+" ============================================
+" リーダーキーをスペースに
+let mapleader = "\<Space>"
+
+" ESC連打でハイライト解除
+nnoremap <Esc><Esc> :nohlsearch<CR>
+
+" 折り返し行でも見た目通りに移動
+nnoremap j gj
+nnoremap k gk
+vnoremap j gj
+vnoremap k gk
+
+" 行頭・行末移動を楽に
+nnoremap H ^
+nnoremap L $
+vnoremap H ^
+vnoremap L $
+
+" ウィンドウ移動
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" バッファ移動
+nnoremap <Leader>n :bnext<CR>
+nnoremap <Leader>p :bprevious<CR>
+nnoremap <Leader>d :bdelete<CR>
+
+" タブ操作
+nnoremap <Leader>t :tabnew<CR>
+nnoremap <Leader>] :tabnext<CR>
+nnoremap <Leader>[ :tabprevious<CR>
+
+" ファイル保存・終了
+nnoremap <Leader>w :w<CR>
+nnoremap <Leader>q :q<CR>
+nnoremap <Leader>x :x<CR>
+
+" 全選択
+nnoremap <Leader>a ggVG
+
+" インデント後も選択維持
+vnoremap < <gv
+vnoremap > >gv
+
+" ヤンク後もカーソル位置維持
+vnoremap y y`]
+
+" 入力モードでのカーソル移動
+inoremap <C-h> <Left>
+inoremap <C-j> <Down>
+inoremap <C-k> <Up>
+inoremap <C-l> <Right>
+inoremap <C-a> <Home>
+inoremap <C-e> <End>
+
+" jj でESC
+inoremap jj <Esc>
+inoremap っj <Esc>
+
+" ============================================
+" 便利コマンド
+" ============================================
+" 現在のファイルのディレクトリに移動
+nnoremap <Leader>cd :cd %:h<CR>:pwd<CR>
+
+" vimrc編集・再読み込み
+nnoremap <Leader>ev :edit $MYVIMRC<CR>
+nnoremap <Leader>sv :source $MYVIMRC<CR>
+
+" 末尾の空白を削除
+nnoremap <Leader>ss :%s/\s\+$//e<CR>
+
+" ============================================
+" ファイルタイプ別設定
+" ============================================
+augroup FileTypeSettings
+  autocmd!
+  " Python
+  autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4
+  " Makefile
+  autocmd FileType make setlocal noexpandtab
+  " Markdown
+  autocmd FileType markdown setlocal wrap
+augroup END
+
+" ============================================
+" その他
+" ============================================
+" undoディレクトリ作成
+if !isdirectory(expand('~/.vim/undo'))
+  call mkdir(expand('~/.vim/undo'), 'p')
+endif
+
+" 最後に開いた位置を記憶
+augroup RestoreCursor
+  autocmd!
+  autocmd BufReadPost *
+    \ if line("'\"") >= 1 && line("'\"") <= line("$") |
+    \   execute "normal! g`\"" |
+    \ endif
+augroup END
 

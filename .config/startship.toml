@@ -1,0 +1,26 @@
+# ~/.config/starship.toml
+
+# Pure風のシンプルなプロンプト
+format = """
+$directory$git_branch$git_status
+$character"""
+
+[character]
+success_symbol = "[❯](purple)"
+error_symbol = "[❯](red)"
+
+[directory]
+style = "blue"
+truncation_length = 0
+truncate_to_repo = false
+
+[git_branch]
+format = "[$branch]($style) "
+style = "gray"
+
+[git_status]
+format = '([$all_status$ahead_behind]($style))'
+style = "red"
+staged = "[+](yellow)"
+modified = "[!](red)"
+untracked = "[?](blue)"

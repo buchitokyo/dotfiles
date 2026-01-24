@@ -34,9 +34,6 @@ RPROMPT=$RPROMPT'${vcs_info_msg_0_}'
 export ZPLUG_HOME=/opt/homebrew/opt/zplug
 source $ZPLUG_HOME/init.zsh
  
-# zshのフレームワーク
-zplug "sorin-ionescu/prezto"
-
 # syntax
 zplug "chrissicool/zsh-256color"
 zplug "b4b4r07/enhancd", use:init.sh
@@ -49,23 +46,6 @@ zplug "mafredri/zsh-async", from:github
 zplug "sindresorhus/pure", use:pure.zsh, from:github, as:theme
 # zplugの設定ここまで
 
-# prezto用のプラグイン
-zplug "modules/environment", from:prezto
-zplug "modules/terminal", from:prezto
-zplug "modules/editor", from:prezto
-zplug "modules/history", from:prezto
-zplug "modules/directory", from:prezto
-zplug "modules/spectrum", from:prezto
-zplug "modules/utility", from:prezto
-zplug "modules/completion", from:prezto
-zplug "modules/prompt", from:prezto
-zplug "modules/homebrew", from:prezto
-zplug "modules/ruby", from:prezto
-
-#zpreztoの初期化
-if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
-fi
 
 # pure
 # autoload -Uz promptinit
@@ -108,11 +88,26 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+eval "$(nodenv init -)"
+#export NVM_DIR="$HOME/.nvm"
+#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+#[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-export PATH="/opt/homebrew/opt/mysql@5.7/bin:$PATH"
+export PATH="/opt/homebrew/Cellar/mysql@5.7/bin:$PATH"
 export PATH="/opt/homebrew/opt/php@7.4/bin:$PATH"
 export PATH="/opt/homebrew/opt/php@7.4/sbin:$PATH"
+# pip EB CLI
+export PATH="$HOME/.local/bin:$PATH"
+
+# port
+# for ((i=2; i<256; i++))
+# do
+#    sudo ifconfig lo0 alias 127.0.0.$i up
+# done
+
+# bun completions
+[ -s "/Users/hirotoshikawabuchi/.bun/_bun" ] && source "/Users/hirotoshikawabuchi/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
