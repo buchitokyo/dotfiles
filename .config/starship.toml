@@ -47,3 +47,6 @@ disabled = true
 
 [gcloud]
 disabled = true
+
+[python]
+disabled = true
