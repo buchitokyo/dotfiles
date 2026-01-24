@@ -35,7 +35,7 @@ up_to_date = '[✓](bold green)'
 stashed = "[📦${count} ](fg:cyan)"
 ahead = "[ ${count} ](fg:purple)"
 behind = "[ ${count} ](fg:yellow)"
-diverged = "[](fg:88)[  נּ ](fg:white bg:88)[ ${ahead_count} ](fg:purple bg:88)[ ${behind_count} ](fg:yellow bg:88)[ ](fg:88)"
+diverged = "[](fg:88)[⚡️](fg:white bg:88)[ ${ahead_count} ](fg:purple bg:88)[ ${behind_count} ](fg:yellow bg:88)[ ](fg:88)"
 
 [time]
 disabled = false
