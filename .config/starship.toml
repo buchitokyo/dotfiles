@@ -20,6 +20,10 @@ format = "\b[$symbol$status](fg:$style)"
 [git_branch]
 format = '[$symbol$branch(:$remote_branch) ]($style)'
 
+[git_commit]
+tag_disabled = false
+tag_symbol = "🏷 "
+
 # ref https://github.com/starship/starship/discussions/1107#discussioncomment-345147
 [git_status]
 style = "#f05133"
