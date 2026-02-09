@@ -1,0 +1,71 @@
+# Ghostty Configuration
+# https://ghostty.org/docs/config
+
+# ========================================
+# フォント設定
+# ========================================
+font-family = "JetBrains Mono"
+font-size = 13
+
+# ========================================
+# テーマ設定
+# ========================================
+# ダーク/ライトモードで自動切り替え
+theme = light:One Half Light,dark:One Half Dark
+
+# 背景透過（0.0〜1.0、1.0=不透明）
+background-opacity = 0.9
+
+# 非フォーカス時のスプリットの透過（1.0=変化なし）
+unfocused-split-opacity = 1.0
+
+# ========================================
+# ウィンドウ設定
+# ========================================
+window-height = 40
+window-width = 160
+window-padding-x = 16
+window-padding-y = 16
+window-padding-balance = true
+window-save-state = always
+
+# macOS: タイトルバースタイル
+macos-titlebar-style = tabs
+
+# macOS: Option キーを Alt として使用
+macos-option-as-alt = true
+
+# ========================================
+# パフォーマンス設定
+# ========================================
+scrollback-limit = 100000
+mouse-hide-while-typing = true
+mouse-scroll-multiplier = 2
+window-inherit-working-directory = true
+
+# ========================================
+# シェル統合
+# ========================================
+shell-integration = detect
+shell-integration-features = cursor,sudo,title
+
+# ========================================
+# キーバインド
+# ========================================
+# 設定リロード
+keybind = cmd+shift+comma=reload_config
+
+# スプリット操作
+keybind = cmd+d=new_split:right
+keybind = cmd+shift+d=new_split:down
+keybind = cmd+w=close_surface
+
+# スプリット間移動（Vim風）
+keybind = ctrl+cmd+h=goto_split:left
+keybind = ctrl+cmd+j=goto_split:bottom
+keybind = ctrl+cmd+k=goto_split:top
+keybind = ctrl+cmd+l=goto_split:right
+
+# プロンプト間ジャンプ
+keybind = cmd+up=jump_to_prompt:-1
+keybind = cmd+down=jump_to_prompt:1

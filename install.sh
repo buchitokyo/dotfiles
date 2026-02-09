@@ -20,3 +20,27 @@ if [ -d ".config" ]; then
         ln -snfv ${PWD}/"$dir" ~/.config/
     done
 fi
+
+# Neovim設定
+if [ -d "nvim" ]; then
+    mkdir -p ~/.config
+    ln -snfv ${PWD}/nvim ~/.config/nvim
+fi
+
+# Ghostty設定
+if [ -d "ghostty" ]; then
+    mkdir -p ~/.config
+    ln -snfv ${PWD}/ghostty ~/.config/ghostty
+fi
+
+# Claude Code設定
+if [ -d "claude" ]; then
+    mkdir -p ~/.claude
+    ln -snfv ${PWD}/claude/settings.json ~/.claude/settings.json
+fi
+
+# tmux プラグインマネージャ（tpm）
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    echo "Installing tpm (tmux plugin manager)..."
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi

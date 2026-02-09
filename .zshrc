@@ -3,6 +3,7 @@
 # ============================================
 export LANG=ja_JP.UTF-8
 export ZSH_DISABLE_COMPFIX=true
+export EDITOR=nvim
 setopt nonomatch
 
 # ============================================
@@ -55,6 +56,23 @@ alias ll=ee
 alias lt=et
 alias lta=eta
 alias l="clear && ls"
+
+# Neovim
+alias vim="nvim"
+alias vi="nvim"
+
+# Claude Code（tmux セッションで起動）
+alias cc='tmux new-session -A -s claude "claude"'
+
+# yazi: ファイルマネージャ (終了時にディレクトリ移動)
+function y() {
+  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+  yazi "$@" --cwd-file="$tmp"
+  if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+    builtin cd -- "$cwd"
+  fi
+  rm -f -- "$tmp"
+}
 
 # 天気予報
 alias wttr='(){ curl -H "Accept-Language: ${LANG%_*}" --compressed "wttr.in/${1:-Tokyo}" }'
@@ -124,4 +142,8 @@ function select-history() {
 zle -N select-history
 bindkey "^h" select-history
 
+# fzf: キーバインド・補完
+eval "$(fzf --zsh)"
 
+# zoxide: スマートcd
+eval "$(zoxide init zsh --cmd z)"
