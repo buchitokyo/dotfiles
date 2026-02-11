@@ -4,13 +4,16 @@ return {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     dependencies = {
-      "hrsh7th/cmp-nvim-lsp",     -- LSP completion
-      "hrsh7th/cmp-buffer",       -- Buffer completion
-      "hrsh7th/cmp-path",         -- Path completion
-      "hrsh7th/cmp-cmdline",      -- Cmdline completion
-      "L3MON4D3/LuaSnip",         -- Snippet engine
-      "saadparwaiz1/cmp_luasnip", -- Snippet completion
-      "rafamadriz/friendly-snippets", -- Snippet collection
+      "hrsh7th/cmp-nvim-lsp",          -- LSP completion
+      "hrsh7th/cmp-nvim-lsp-signature-help", -- Signature help
+      "hrsh7th/cmp-buffer",            -- Buffer completion
+      "hrsh7th/cmp-path",              -- Path completion
+      "hrsh7th/cmp-cmdline",           -- Cmdline completion
+      "L3MON4D3/LuaSnip",              -- Snippet engine
+      "saadparwaiz1/cmp_luasnip",      -- Snippet completion
+      "rafamadriz/friendly-snippets",   -- Snippet collection
+      "hrsh7th/cmp-emoji",             -- Emoji completion
+      "onsails/lspkind.nvim",          -- LSP kind icons
     },
     config = function()
       local cmp = require("cmp")
@@ -52,21 +55,24 @@ return {
         }),
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
+          { name = "nvim_lsp_signature_help" },
+        }, {
+          { name = "copilot" },
+        }, {
           { name = "luasnip" },
           { name = "buffer" },
+        }, {
           { name = "path" },
+          { name = "emoji" },
         }),
         formatting = {
-          format = function(entry, vim_item)
-            -- Source names
-            vim_item.menu = ({
-              nvim_lsp = "[LSP]",
-              luasnip = "[Snippet]",
-              buffer = "[Buffer]",
-              path = "[Path]",
-            })[entry.source.name]
-            return vim_item
-          end,
+          format = require("lspkind").cmp_format({
+            mode = "symbol",
+            maxwidth = 50,
+            ellipsis_char = "...",
+            preset = "codicons",
+            symbol_map = { Copilot = "" },
+          }),
         },
         window = {
           completion = cmp.config.window.bordered(),

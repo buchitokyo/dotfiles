@@ -54,6 +54,22 @@ autocmd("FileType", {
 })
 
 -- ============================================
+-- カーソル & 選択範囲ハイライト（パステルカラー）
+-- ============================================
+local custom_hl = augroup("CustomHighlights", { clear = true })
+
+autocmd("ColorScheme", {
+  group = custom_hl,
+  callback = function()
+    vim.api.nvim_set_hl(0, "Cursor", { fg = "#1e1e2e", bg = "#94e2d5" })
+    vim.api.nvim_set_hl(0, "CursorLine", { bg = "#2a2a3a" })
+    vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#94e2d5", bold = true })
+    vim.api.nvim_set_hl(0, "CursorColumn", { bg = "#2a2a3a" })
+    vim.api.nvim_set_hl(0, "Visual", { bg = "#45475a", fg = "#cdd6f4" })
+  end,
+})
+
+-- ============================================
 -- ハイライト on yank
 -- ============================================
 local highlight_yank = augroup("HighlightYank", { clear = true })

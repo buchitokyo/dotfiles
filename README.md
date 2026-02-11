@@ -97,23 +97,30 @@ exec zsh
 
 ```
 dotfiles/
-├── .zshrc                      # zsh 設定
-├── .tmux.conf                  # tmux 設定
-├── .config/
-│   ├── sheldon/
-│   │   └── plugins.toml        # プラグイン管理
-│   └── starship.toml           # プロンプト設定
-├── nvim/                       # Neovim 設定（~/.config/nvim にリンク）
+├── nvim/                       # Neovim（~/.config/nvim）
 │   ├── init.lua
 │   └── lua/
 │       ├── core/               # 基本設定・キーマップ
 │       ├── config/             # lazy.nvim 設定
 │       └── plugins/            # プラグイン設定
-├── ghostty/                    # Ghostty 設定（~/.config/ghostty にリンク）
+├── tmux/                       # tmux（~/.config/tmux）
+│   ├── tmux.conf
+│   ├── toggle-claude-pane.sh   # Claude Code ペイントグル
+│   └── yazi-popup.sh           # yazi ポップアップ
+├── ghostty/                    # Ghostty（~/.config/ghostty）
 │   └── config
-├── .vimrc                      # vim 設定
-├── .gvimrc                     # gvim 設定（GUI版vim）
-├── .vim/                       # vim プラグイン等
+├── sheldon/                    # zsh プラグイン管理（~/.config/sheldon）
+│   └── plugins.toml
+├── yazi/                       # yazi ファイルマネージャ（~/.config/yazi）
+│   ├── init.lua
+│   └── yazi.toml
+├── starship.toml               # プロンプト（~/.config/starship.toml）
+├── claude/                     # Claude Code（~/.claude）
+│   └── settings.json
+├── .zshrc                      # zsh 設定（~/）
+├── .vimrc                      # vim 設定（~/）
+├── .gvimrc                     # gvim 設定（~/）
+├── .vim/                       # vim プラグイン等（~/）
 ├── .gitignore                  # Git 除外設定
 ├── install.sh                  # インストールスクリプト
 └── README.md
@@ -142,6 +149,14 @@ dotfiles/
 ### yazi（ファイルマネージャ）
 
 `y` コマンドで起動。終了時（`q`）にyazi内で開いていたディレクトリにcdする。
+
+#### プラグインのインストール
+
+```zsh
+ya pack -a yazi-rs/plugins:git
+```
+
+Git リポジトリ内のファイル/ディレクトリに Git ステータスを表示する。
 
 #### 基本操作
 
@@ -225,24 +240,28 @@ dotfiles/
 - **LSP対応**（関数ジャンプ、補完、リネーム等）
 - プラグインマネージャ: lazy.nvim
 - 詳細なキー操作は [チートシート](nvim/CHEATSHEET.md) を参照
+- lualine.nvim（ステータスライン + タブライン：バッファ一覧・Git ブランチ・diff 表示）
+- nvim-navic（LSP パンくずリスト、lualine に統合）
+- dropbar.nvim（winbar パンくずリスト）
 - hlchunk.nvim（インデントブロックのハイライト）
-- noice.nvim（コマンドライン・通知のポップアップ UI）
+- noice.nvim（コマンドライン・検索のポップアップ UI）
 - which-key.nvim（キーバインドヘルプ表示）
-- Snacks.nvim（ファジーピッカー・インデントガイド）
-- oil.nvim（ファイルエクスプローラー）
-- dropbar.nvim（パンくずリスト）
+- Snacks.nvim（ファジーピッカー）
+- yazi.nvim（ファイルマネージャ）
 - nvim-treesitter-context（関数/クラスのコンテキスト固定表示）
 - nvim-scrollbar（スクロールバー + 診断マーク）
 - accelerated-jk.nvim（j/k 加速移動）
 - comment-box（コメントボックス作成）
 - namu.nvim（シンボルナビゲーション）
 - tiny-inline-diagnostic（エラー/警告のインライン表示）
+- copilot.lua + copilot-cmp（GitHub Copilot 補完）
 
 #### 対応言語（LSP）
 
-- TypeScript / JavaScript（ts_ls）
-- Python（pyright）
+- TypeScript / JavaScript（typescript-tools.nvim）
+- Python（basedpyright）
 - Lua（lua_ls）
+- Terraform（terraformls）
 
 #### 主なキーマップ
 
@@ -250,12 +269,27 @@ dotfiles/
 
 | キー | 機能 |
 |------|------|
+| `Space w` | 保存 |
+| `Space q` | 終了 |
+| `Space x` | 保存して終了 |
+| `jj` | ESC（インサートモード） |
+| `H` / `L` | 行頭 / 行末（ノーマル・ビジュアル） |
+| `gg` / `G` | ファイル先頭 / 末尾 |
+| `数字G` / `:数字` | 指定行にジャンプ（例: `42G`、`:42`） |
+| `Esc Esc` | 検索ハイライト解除 |
+| `Space a` | 全選択 |
+| `Ctrl+h/j/k/l` | ウィンドウ移動 |
+| `Space d` | バッファ削除 |
+| `Space t` | 新規タブ |
+| `Space cd` | 現在のファイルのディレクトリに移動 |
+| `Space ss` | 末尾の空白を削除 |
 | `gd` | 定義へジャンプ |
 | `gr` | 参照一覧 |
 | `K` | ホバードキュメント |
 | `Space rn` | リネーム |
 | `Space ca` | コードアクション |
 | `[d` / `]d` | 診断メッセージ移動 |
+| `Tab` / `S-Tab` | 次/前のバッファ |
 | `Space ff` | ファイル検索（Snacks Picker） |
 | `Space fg` | 文字列検索（Snacks Picker） |
 | `u` | 元に戻す（Undo） |
@@ -305,7 +339,7 @@ dotfiles/
 
 ### tmux（ターミナルマルチプレクサ）
 
-セッション管理・ペイン分割でターミナル作業を効率化。Prefix は `Ctrl+b`（デフォルト）。
+セッション管理・ペイン分割でターミナル作業を効率化。Prefix は `Ctrl+a`。
 
 #### 基本操作
 
@@ -315,7 +349,11 @@ dotfiles/
 | `prefix + s` | 上下にペイン分割 |
 | `prefix + c` | 新規ウィンドウ |
 | `prefix + x` | ペインを閉じる |
+| `prefix + &` | ウィンドウを閉じる |
 | `prefix + H/J/K/L` | ペインリサイズ（左/下/上/右） |
+| `Alt+←` / `Alt+→` | ペイン移動（端でウィンドウ跨ぎ） |
+| `Alt+c` | Claude Code ペインにトグル |
+| `prefix + y` | yazi ポップアップ（ディレクトリ同期） |
 | `prefix + Escape` | コピーモード（vi キーバインド） |
 | `v` (コピーモード) | 選択開始 |
 | `y` (コピーモード) | コピー（pbcopy） |
@@ -330,6 +368,7 @@ dotfiles/
 | `tmux a` | 最後のセッションに復帰 |
 | `tmux a -t 名前` | 指定セッションに復帰 |
 | `tmux kill-session -t 名前` | セッション削除 |
+| `tmux switch -t 名前or番号` | セッション切り替え（tmux 内から） |
 
 #### セッション操作（tmux 内）
 

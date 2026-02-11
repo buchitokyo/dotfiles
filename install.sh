@@ -4,36 +4,41 @@ set -u
 BASEDIR=$(dirname $0)
 cd $BASEDIR
 
-# ドットファイルのシンボリックリンク（既存の処理）
+# ==============================================================================
+# ホームディレクトリ向けドットファイル（.zshrc, .vimrc 等 → ~/）
+# ==============================================================================
 for f in .??*; do
     [ "$f" = ".git" ] && continue
     [ "$f" = ".gitconfig.local.template" ] && continue
     [ "$f" = ".gitmodules" ] && continue
-    [ "$f" = ".config" ] && continue  # .configは別処理
     ln -snfv ${PWD}/"$f" ~/
 done
 
-# .config 以下の処理
-if [ -d ".config" ]; then
-    mkdir -p ~/.config
-    for dir in .config/*; do
-        ln -snfv ${PWD}/"$dir" ~/.config/
+# ==============================================================================
+# ~/.config 向け設定（ディレクトリ単位でシンボリックリンク）
+# ==============================================================================
+mkdir -p ~/.config
+
+# ディレクトリごとリンク
+for dir in nvim tmux ghostty sheldon; do
+    [ -d "$dir" ] && ln -snfv ${PWD}/"$dir" ~/.config/"$dir"
+done
+
+# 単体ファイル
+[ -f "starship.toml" ] && ln -snfv ${PWD}/starship.toml ~/.config/starship.toml
+
+# Yazi（plugins/package.toml は ya pkg が管理するためファイル単位でリンク）
+if [ -d "yazi" ]; then
+    mkdir -p ~/.config/yazi
+    for f in yazi/*; do
+        ln -snfv ${PWD}/"$f" ~/.config/yazi/
     done
 fi
 
-# Neovim設定
-if [ -d "nvim" ]; then
-    mkdir -p ~/.config
-    ln -snfv ${PWD}/nvim ~/.config/nvim
-fi
-
-# Ghostty設定
-if [ -d "ghostty" ]; then
-    mkdir -p ~/.config
-    ln -snfv ${PWD}/ghostty ~/.config/ghostty
-fi
-
-# Claude Code設定
+# ==============================================================================
+# その他
+# ==============================================================================
+# Claude Code 設定（~/.claude/settings.json）
 if [ -d "claude" ]; then
     mkdir -p ~/.claude
     ln -snfv ${PWD}/claude/settings.json ~/.claude/settings.json

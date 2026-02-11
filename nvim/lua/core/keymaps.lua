@@ -37,6 +37,8 @@ keymap("n", "<C-l>", "<C-w>l", opts)
 -- ============================================
 keymap("n", "<Leader>n", ":bnext<CR>", opts)
 keymap("n", "<Leader>p", ":bprevious<CR>", opts)
+keymap("n", "<Tab>", ":bnext<CR>", opts)
+keymap("n", "<S-Tab>", ":bprev<CR>", opts)
 keymap("n", "<Leader>d", ":bdelete<CR>", opts)
 
 -- ============================================

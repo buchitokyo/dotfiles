@@ -24,7 +24,7 @@ return {
     config = function()
       require("mason-lspconfig").setup({
         ensure_installed = {
-          "pyright",
+          "basedpyright",
           "lua_ls",
           "terraformls",
         },
@@ -74,7 +74,7 @@ return {
       })
 
       -- Configure servers using vim.lsp.config (Neovim 0.11+)
-      vim.lsp.config("pyright", {
+      vim.lsp.config("basedpyright", {
         capabilities = capabilities,
       })
 
@@ -91,13 +91,16 @@ return {
       -- Disable ts_ls (using typescript-tools.nvim instead)
       vim.lsp.enable("ts_ls", false)
 
+      -- Disable pyright (using basedpyright instead)
+      vim.lsp.enable("pyright", false)
+
       -- Terraform
       vim.lsp.config("terraformls", {
         capabilities = capabilities,
       })
 
       -- Enable servers
-      vim.lsp.enable({ "pyright", "lua_ls", "terraformls" })
+      vim.lsp.enable({ "basedpyright", "lua_ls", "terraformls" })
 
       -- Diagnostics
       vim.diagnostic.config({

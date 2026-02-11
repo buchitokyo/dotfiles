@@ -57,30 +57,219 @@ return {
     },
   },
 
-  -- oil.nvim (file explorer)
+  -- yazi.nvim (file manager)
   {
-    "stevearc/oil.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    "mikavilpas/yazi.nvim",
+    lazy = false,
+    dependencies = { "nvim-lua/plenary.nvim" },
     keys = {
-      { "-", "<cmd>Oil<cr>", desc = "Open parent directory" },
-      { "<Leader>e", "<cmd>Oil<cr>", desc = "File explorer" },
+      { "-", "<cmd>Yazi<cr>", desc = "Open yazi (current file)" },
+      { "<Leader>e", "<cmd>Yazi cwd<cr>", desc = "File explorer (cwd)" },
     },
     opts = {
-      view_options = {
-        show_hidden = true,
-      },
+      open_for_directories = true,
     },
+  },
+
+  -- nvim-navic (LSP breadcrumbs)
+  {
+    "SmiteshP/nvim-navic",
+    event = { "BufNewFile", "BufReadPre" },
+    dependencies = { "neovim/nvim-lspconfig" },
+    opts = {
+      lsp = { auto_attach = true },
+      highlight = true,
+      depth_limit = 9,
+    },
+  },
+
+  -- dropbar (winbar breadcrumbs)
+  {
+    "Bekaboo/dropbar.nvim",
+    enabled = false,
+    event = { "BufReadPre", "BufNewFile" },
+    opts = {},
   },
 
   -- Status line
   {
     "nvim-lualine/lualine.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    event = "VimEnter",
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+      "rmehri01/onenord.nvim",
+      "lewis6991/gitsigns.nvim",
+      "SmiteshP/nvim-navic",
+    },
     config = function()
+      local colors = require("onenord.colors").load()
+      colors.mypink = colors.mypink or "#FFB2CC"
+      local switch_color = {
+        active = { fg = colors.active, bg = colors.mypink },
+        inactive = { fg = colors.active, bg = colors.light_gray },
+      }
+
       require("lualine").setup({
         options = {
-          theme = "onedark",
+          icons_enabled = true,
+          theme = "auto",
+          section_separators = { left = "", right = "" },
+          component_separators = { left = "", right = "" },
+          disabled_filetypes = {
+            statusline = {},
+            winbar = {},
+          },
+          ignore_focus = {},
+          always_divide_middle = true,
+          always_show_tabline = true,
+          globalstatus = true,
+          refresh = {
+            statusline = 1000,
+            tabline = 1000,
+            winbar = 1000,
+          },
         },
+        sections = {
+          lualine_a = {
+            "mode",
+          },
+          lualine_b = {
+            {
+              "filename",
+              file_status = true,
+              newfile_status = true,
+              path = 1,
+              shorting_target = 40,
+              symbols = { modified = "_󰷥", readonly = " ", newfile = "󰄛", unnamed = "[No Name]" },
+            },
+          },
+          lualine_c = {
+            {
+              "diagnostics",
+              sources = {
+                "nvim_diagnostic",
+                "nvim_lsp",
+              },
+              sections = {
+                "error",
+                "warn",
+                "info",
+                "hint",
+              },
+              symbols = {
+                error = " ",
+                warn = " ",
+                info = " ",
+                hint = " ",
+              },
+              update_in_insert = false,
+              always_visible = false,
+            },
+            { "navic" },
+          },
+          lualine_x = {
+            {
+              require("lazy.status").updates,
+              cond = require("lazy.status").has_updates,
+              color = {
+                fg = "#ff9e64",
+              },
+            },
+          },
+          lualine_y = {
+            {
+              "filetype",
+              colored = true,
+              icon_only = false,
+              color = {
+                fg = colors.fg,
+              },
+            },
+          },
+          lualine_z = {
+            {
+              "fileformat",
+              icons_enabled = true,
+              symbols = {
+                unix = "",
+                dos = "",
+                mac = "",
+              },
+              separator = {
+                left = "",
+                right = "",
+              },
+            },
+          },
+        },
+        inactive_sections = {
+          lualine_a = {},
+          lualine_b = {},
+          lualine_c = { "filename" },
+          lualine_x = { "location" },
+          lualine_y = {},
+          lualine_z = {},
+        },
+        tabline = {
+          lualine_a = {
+            {
+              "buffers",
+              show_filename_only = true,
+              hide_filename_extension = false,
+              show_modified_status = true,
+              mode = 0,
+              max_length = vim.o.columns * 2 / 3,
+              filetype_names = {
+                TelescopePrompt = "Telescope",
+                dashboard = "Dashboard",
+                packer = "Packer",
+                fzf = "FZF",
+                alpha = "Alpha",
+              },
+              use_mode_colors = false,
+              buffers_color = switch_color,
+              symbols = {
+                modified = "_󰷥",
+                alternate_file = " ",
+                directory = " ",
+              },
+            },
+          },
+          lualine_b = {},
+          lualine_c = {},
+          lualine_x = {
+            {
+              "diff",
+              colored = true,
+              symbols = {
+                added = " ",
+                modified = " ",
+                removed = " ",
+              },
+              source = nil,
+            },
+          },
+          lualine_y = {
+            {
+              "b:gitsigns_head",
+              icon = {
+                "",
+                color = {
+                  fg = colors.orange,
+                },
+              },
+              color = {
+                fg = colors.fg,
+              },
+            },
+          },
+          lualine_z = {
+            { "tabs", tabs_color = switch_color },
+          },
+        },
+        winbar = {},
+        inactive_winbar = {},
+        extensions = {},
       })
     end,
   },
@@ -170,11 +359,53 @@ return {
   {
     "folke/noice.nvim",
     event = "VeryLazy",
-    opts = {},
     dependencies = {
       "MunifTanjim/nui.nvim",
       "rcarriga/nvim-notify",
     },
+    config = function()
+      require("noice").setup({
+        lsp = {
+          override = {
+            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+            ["vim.lsp.util.stylize_markdown"] = true,
+            ["cmp.entry.get_documentation"] = true,
+          },
+        },
+        presets = {
+          bottom_search = false,
+          command_palette = true,
+          long_message_to_split = true,
+          inc_rename = false,
+          lsp_doc_border = false,
+        },
+      })
+      vim.api.nvim_set_hl(0, "NoiceCmdlinePopupBorder", { fg = "#98c379" })
+      vim.api.nvim_set_hl(0, "NoiceCmdlineIcon", { fg = "#98c379" })
+    end,
+  },
+
+  -- nvim-hlslens (検索ハイライト強化)
+  {
+    "kevinhwang91/nvim-hlslens",
+    event = { "BufReadPre", "BufNewFile" },
+    keys = {
+      { "<Leader>L" },
+    },
+    config = function()
+      require("hlslens").setup({
+        calm_down = true,
+        nearest_only = true,
+      })
+      vim.keymap.set({ "n", "x" }, "<Leader>L", function()
+        vim.schedule(function()
+          if require("hlslens").exportLastSearchToQuickfix() then
+            vim.cmd("cw")
+          end
+        end)
+        return ":noh<CR>"
+      end, { expr = true })
+    end,
   },
 
   -- which-key (keybinding help)
@@ -196,139 +427,93 @@ return {
   -- Git signs
   {
     "lewis6991/gitsigns.nvim",
-    event = { "BufReadPre", "BufNewFile" },
+    event = { "BufReadPre" },
     config = function()
       require("gitsigns").setup({
         signs = {
-          add = { text = "│" },
-          change = { text = "│" },
-          delete = { text = "_" },
-          topdelete = { text = "‾" },
-          changedelete = { text = "~" },
+          add = { text = " ▎" },
+          change = { text = " ▎" },
+          delete = { text = " " },
+          topdelete = { text = " " },
+          changedelete = { text = "▎ " },
+          untracked = { text = " ▎" },
         },
-      })
-    end,
-  },
-
-  -- dropbar (breadcrumbs)
-  {
-    "Bekaboo/dropbar.nvim",
-    event = { "BufReadPre", "BufNewFile" },
-    keys = {
-      { "<Leader>wp", function() require("dropbar.api").pick() end, desc = "Winbar pick" },
-    },
-    opts = {
-      bar = {
-        sources = function(buf, _)
-          local sources = require("dropbar.sources")
-          local utils = require("dropbar.utils")
-          if vim.bo[buf].ft == "markdown" then
-            return { sources.path, sources.markdown }
+        signs_staged = {
+          add = { text = " ▎" },
+          change = { text = " ▎" },
+          delete = { text = " " },
+          topdelete = { text = " " },
+          changedelete = { text = "▎ " },
+          untracked = { text = " ▎" },
+        },
+        signs_staged_enable = false,
+        signcolumn = true,
+        numhl = false,
+        linehl = false,
+        word_diff = false,
+        watch_gitdir = {
+          follow_files = true,
+        },
+        auto_attach = true,
+        attach_to_untracked = false,
+        current_line_blame = false,
+        current_line_blame_opts = {
+          virt_text = true,
+          virt_text_pos = "eol",
+          delay = 1000,
+          ignore_whitespace = false,
+          virt_text_priority = 100,
+          use_focus = true,
+        },
+        current_line_blame_formatter = "<summary> (<author_time:%Y/%m>) - <author>",
+        sign_priority = 6,
+        update_debounce = 100,
+        status_formatter = nil,
+        max_file_length = 40000,
+        preview_config = {
+          border = "single",
+          style = "minimal",
+          relative = "cursor",
+          row = 0,
+          col = 1,
+        },
+        on_attach = function(bufnr)
+          local gitsigns = require("gitsigns")
+          local function map(mode, l, r, opts)
+            opts = opts or {}
+            opts.buffer = bufnr
+            vim.keymap.set(mode, l, r, opts)
           end
-          if vim.bo[buf].buftype == "terminal" then
-            return { sources.terminal }
-          end
-          return {
-            sources.path,
-            utils.source.fallback({
-              sources.lsp,
-              sources.treesitter,
-            }),
-          }
+          map("n", "]c", function()
+            if vim.wo.diff then
+              vim.cmd.normal({ "]c", bang = true })
+            else
+              gitsigns.nav_hunk("next")
+            end
+          end)
+          map("n", "[c", function()
+            if vim.wo.diff then
+              vim.cmd.normal({ "[c", bang = true })
+            else
+              gitsigns.nav_hunk("prev")
+            end
+          end)
+          map("n", "<leader>hs", gitsigns.stage_hunk)
+          map("n", "<leader>hr", gitsigns.reset_hunk)
+          map("v", "<leader>hs", function() gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") }) end)
+          map("v", "<leader>hr", function() gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") }) end)
+          map("n", "<leader>hS", gitsigns.stage_buffer)
+          map("n", "<leader>hu", gitsigns.undo_stage_hunk)
+          map("n", "<leader>hR", gitsigns.reset_buffer)
+          map("n", "<leader>hp", gitsigns.preview_hunk)
+          map("n", "<leader>hb", function() gitsigns.blame_line({ full = true }) end)
+          map("n", "<leader>tb", gitsigns.toggle_current_line_blame)
+          map("n", "<leader>hd", gitsigns.diffthis)
+          map("n", "<leader>hD", function() gitsigns.diffthis("~") end)
+          map("n", "<leader>td", gitsigns.toggle_deleted)
+          map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
         end,
-      },
-      icons = {
-        ui = {
-          bar = {
-            separator = "  ",
-            extends = "…",
-          },
-          menu = {
-            separator = " ",
-            indicator = " ",
-          },
-        },
-        kinds = {
-          symbols = {
-            File = "󰈙 ",
-            Module = "󰏗 ",
-            Namespace = "󰅩 ",
-            Package = "󰏗 ",
-            Class = "󰠱 ",
-            Method = "󰊕 ",
-            Property = "󰜢 ",
-            Field = "󰜢 ",
-            Constructor = " ",
-            Enum = " ",
-            Interface = " ",
-            Function = "󰊕 ",
-            Variable = "󰀫 ",
-            Constant = "󰏿 ",
-            String = "󰀬 ",
-            Number = "󰎠 ",
-            Boolean = " ",
-            Array = "󰅪 ",
-            Object = "󰅩 ",
-            Key = "󰌋 ",
-            Null = "󰟢 ",
-            EnumMember = " ",
-            Struct = "󰙅 ",
-            Event = " ",
-            Operator = "󰆕 ",
-            TypeParameter = "󰊄 ",
-          },
-        },
-      },
-    },
-    config = function(_, opts)
-      require("dropbar").setup(opts)
-
-      -- onedark に合わせたハイライト設定
-      local colors = {
-        blue = "#61afef",
-        green = "#98c379",
-        yellow = "#e5c07b",
-        orange = "#d19a66",
-        purple = "#c678dd",
-        cyan = "#56b6c2",
-        red = "#e06c75",
-        fg = "#abb2bf",
-        bg_dark = "#21252b",
-      }
-
-      -- Winbar 背景
-      vim.api.nvim_set_hl(0, "WinBar", { fg = colors.fg, bg = "NONE" })
-      vim.api.nvim_set_hl(0, "WinBarNC", { fg = "#5c6370", bg = "NONE" })
-
-      -- セパレータ
-      vim.api.nvim_set_hl(0, "DropBarIconUISeparator", { fg = "#5c6370" })
-
-      -- シンボル種別ごとの色
-      vim.api.nvim_set_hl(0, "DropBarIconKindFile", { fg = colors.fg })
-      vim.api.nvim_set_hl(0, "DropBarIconKindFolder", { fg = colors.yellow })
-      vim.api.nvim_set_hl(0, "DropBarIconKindFunction", { fg = colors.blue })
-      vim.api.nvim_set_hl(0, "DropBarIconKindMethod", { fg = colors.blue })
-      vim.api.nvim_set_hl(0, "DropBarIconKindConstructor", { fg = colors.blue })
-      vim.api.nvim_set_hl(0, "DropBarIconKindClass", { fg = colors.yellow })
-      vim.api.nvim_set_hl(0, "DropBarIconKindInterface", { fg = colors.cyan })
-      vim.api.nvim_set_hl(0, "DropBarIconKindStruct", { fg = colors.yellow })
-      vim.api.nvim_set_hl(0, "DropBarIconKindModule", { fg = colors.orange })
-      vim.api.nvim_set_hl(0, "DropBarIconKindNamespace", { fg = colors.orange })
-      vim.api.nvim_set_hl(0, "DropBarIconKindPackage", { fg = colors.orange })
-      vim.api.nvim_set_hl(0, "DropBarIconKindProperty", { fg = colors.green })
-      vim.api.nvim_set_hl(0, "DropBarIconKindField", { fg = colors.green })
-      vim.api.nvim_set_hl(0, "DropBarIconKindEnum", { fg = colors.purple })
-      vim.api.nvim_set_hl(0, "DropBarIconKindEnumMember", { fg = colors.purple })
-      vim.api.nvim_set_hl(0, "DropBarIconKindVariable", { fg = colors.red })
-      vim.api.nvim_set_hl(0, "DropBarIconKindConstant", { fg = colors.orange })
-      vim.api.nvim_set_hl(0, "DropBarIconKindString", { fg = colors.green })
-      vim.api.nvim_set_hl(0, "DropBarIconKindEvent", { fg = colors.purple })
-      vim.api.nvim_set_hl(0, "DropBarIconKindOperator", { fg = colors.cyan })
-      vim.api.nvim_set_hl(0, "DropBarIconKindTypeParameter", { fg = colors.cyan })
-
-      -- ドロップダウンメニューのスタイル
-      vim.api.nvim_set_hl(0, "DropBarMenuHoverEntry", { bg = "#2c313a" })
-      vim.api.nvim_set_hl(0, "DropBarMenuCurrentContext", { fg = colors.blue, bold = true })
+      })
     end,
   },
 
@@ -380,6 +565,49 @@ return {
     "tiagovla/scope.nvim",
     event = "VeryLazy",
     config = true,
+  },
+
+  -- muren (複数検索置換)
+  {
+    "AckslD/muren.nvim",
+    cmd = { "MurenToggle", "MurenOpen", "MurenFresh", "MurenUnique" },
+    keys = {
+      { "<Leader>mut", "<cmd>MurenToggle<cr>", desc = "Muren toggle" },
+      { "<Leader>muf", "<cmd>MurenFresh<cr>", desc = "Muren fresh" },
+      { "<Leader>mu", "<cmd>MurenUnique<cr>", desc = "Muren unique" },
+    },
+    config = true,
+  },
+
+  -- todo-comments (TODO/FIXME/HACK 等のハイライト)
+  {
+    "folke/todo-comments.nvim",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {},
+  },
+
+  -- copilot.lua
+  {
+    "zbirenbaum/copilot.lua",
+    event = "VimEnter",
+    opts = {
+      panel = { enabled = false },
+      suggestion = { enabled = false },
+    },
+  },
+
+  -- copilot-cmp
+  {
+    "zbirenbaum/copilot-cmp",
+    event = "VimEnter",
+    dependencies = {
+      "hrsh7th/nvim-cmp",
+      "zbirenbaum/copilot.lua",
+    },
+    config = function()
+      require("copilot_cmp").setup()
+    end,
   },
 
   -- tiny-inline-diagnostic (インライン診断表示)
