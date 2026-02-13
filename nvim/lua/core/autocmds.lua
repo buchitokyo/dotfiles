@@ -66,6 +66,10 @@ autocmd("ColorScheme", {
     vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#94e2d5", bold = true })
     vim.api.nvim_set_hl(0, "CursorColumn", { bg = "#2a2a3a" })
     vim.api.nvim_set_hl(0, "Visual", { bg = "#45475a", fg = "#cdd6f4" })
+
+    -- neo-tree: git ステータスの色を見やすく
+    vim.api.nvim_set_hl(0, "NeoTreeGitUntracked", { fg = "#73daca" })
+    vim.api.nvim_set_hl(0, "NeoTreeGitAdded", { fg = "#9ece6a" })
   end,
 })
 

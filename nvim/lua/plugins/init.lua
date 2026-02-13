@@ -805,6 +805,16 @@ return {
     },
   },
 
+  -- vim-visual-multi (マルチカーソル)
+  {
+    "mg979/vim-visual-multi",
+    branch = "master",
+    event = "VeryLazy",
+    init = function()
+      vim.g.VM_mouse_mappings = 1
+    end,
+  },
+
   -- comment-box (コメントボックス)
   {
     "LudoPinelli/comment-box.nvim",

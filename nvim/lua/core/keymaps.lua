@@ -12,8 +12,19 @@ keymap("n", ";", ":", { noremap = true })
 -- ESC連打でハイライト解除
 keymap("n", "<Esc><Esc>", ":nohlsearch<CR>", opts)
 
--- Ctrl+C を安全に（Cmd+C が端末に漏れた場合の対策）
-keymap("n", "<C-c>", "<Esc>", opts)
+-- Cmd+C: ノーマルでは無害化、ビジュアルではヤンク（コピー）
+keymap("n", "<D-c>", "<Esc>", opts)
+keymap("v", "<D-c>", "y", opts)
+
+-- Cmd+/ → コメントトグル（Comment.nvim）
+keymap("n", "<D-/>", function() require("Comment.api").toggle.linewise.current() end, opts)
+keymap("v", "<D-/>", "<Esc><Cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", opts)
+
+-- Cmd+Z → アンドゥ / Cmd+Y → リドゥ
+keymap("n", "<D-z>", "u", opts)
+keymap("i", "<D-z>", "<C-o>u", opts)
+keymap("n", "<D-y>", "<C-r>", opts)
+keymap("i", "<D-y>", "<C-o><C-r>", opts)
 
 -- 折り返し行でも見た目通りに移動
 keymap("n", "j", "gj", opts)
@@ -59,13 +70,14 @@ keymap("n", "<Leader>[", ":tabprevious<CR>", opts)
 -- ファイル操作
 -- ============================================
 keymap("n", "<Leader>w", ":w<CR>", opts)
-keymap("n", "<C-s>", ":w<CR>", opts)
-keymap("i", "<C-s>", "<C-o>:w<CR>", opts)
+keymap("n", "<D-s>", ":w<CR>", opts)
+keymap("i", "<D-s>", "<C-o>:w<CR>", opts)
 keymap("n", "<Leader>q", ":q<CR>", opts)
 keymap("n", "<Leader>x", ":x<CR>", opts)
 
 -- 全選択
 keymap("n", "<Leader>a", "ggVG", opts)
+keymap("n", "<D-a>", "ggVG", opts)
 
 -- 全文コピー（システムクリップボード）
 keymap("n", "<Leader>y", ':%y+<CR>', opts)
