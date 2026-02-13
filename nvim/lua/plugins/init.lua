@@ -20,6 +20,7 @@ return {
   { import = "plugins.treesitter" },
 
   -- Snacks (fuzzy picker)
+  ---@diagnostic disable: undefined-global
   {
     "folke/snacks.nvim",
     lazy = false,
@@ -56,6 +57,291 @@ return {
       },
     },
   },
+  ---@diagnostic enable: undefined-global
+
+  -- bufferline (タブ/バッファライン)
+  {
+    "akinsho/bufferline.nvim",
+    version = "*",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    event = "VimEnter",
+    opts = {
+      options = {
+        offsets = {
+          {
+            filetype = "neo-tree",
+            text = "",
+            text_align = "left",
+            highlight = "Directory",
+            separator = true,
+            padding = 1,
+          },
+        },
+      },
+    },
+  },
+
+  -- neo-tree (サイドバー型ファイルツリー)
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    lazy = false,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
+    },
+    keys = {
+      { "<Leader>E", "<cmd>Neotree toggle<cr>", desc = "Toggle file tree" },
+      { "<Leader>gE", "<cmd>Neotree toggle git_status<cr>", desc = "Git status tree" },
+    },
+    config = function()
+      -- ディレクトリで開いたとき neo-tree を自動表示
+      vim.api.nvim_create_autocmd("VimEnter", {
+        callback = function(data)
+          if vim.fn.isdirectory(data.file) == 1 then
+            vim.cmd.cd(data.file)
+            require("neo-tree.command").execute({ toggle = false, dir = data.file })
+          end
+        end,
+      })
+
+      require("neo-tree").setup({
+        close_if_last_window = false,
+        popup_border_style = "rounded",
+        enable_git_status = true,
+        enable_diagnostics = true,
+        enable_normal_mode_for_inputs = false,
+        open_files_do_not_replace_types = { "terminal", "trouble", "qf", "neo-tree" },
+        sort_case_insensitive = false,
+        source_selector = {
+          winbar = true,
+          sources = {
+            { source = "filesystem", display_name = "󱧷 Files" },
+            { source = "buffers", display_name = "󰈚 Buffers" },
+            { source = "git_status", display_name = " Git" },
+          },
+        },
+        default_component_configs = {
+          container = {
+            enable_character_fade = true,
+          },
+          indent = {
+            indent_size = 2,
+            padding = 1,
+            with_markers = true,
+            indent_marker = "│",
+            last_indent_marker = "└",
+            highlight = "NeoTreeIndentMarker",
+            with_expanders = nil,
+            expander_collapsed = "",
+            expander_expanded = "",
+            expander_highlight = "NeoTreeExpander",
+          },
+          icon = {
+            folder_closed = "",
+            folder_open = "",
+            folder_empty = "󰜌",
+            provider = function(icon, node)
+              if node.type == "file" or node.type == "terminal" then
+                local success, web_devicons = pcall(require, "nvim-web-devicons")
+                local name = node.type == "terminal" and "terminal" or node.name
+                if success then
+                  local devicon, hl = web_devicons.get_icon(name)
+                  icon.text = devicon or icon.text
+                  icon.highlight = hl or icon.highlight
+                end
+              end
+            end,
+            default = "*",
+            highlight = "NeoTreeFileIcon",
+          },
+          modified = {
+            symbol = "[+]",
+            highlight = "NeoTreeModified",
+          },
+          name = {
+            trailing_slash = false,
+            use_git_status_colors = true,
+            highlight = "NeoTreeFileName",
+          },
+          git_status = {
+            symbols = {
+              -- Change type
+              added = "",
+              modified = "",
+              deleted = "✖",
+              renamed = "󰁕",
+              -- Status type
+              untracked = "",
+              ignored = "",
+              unstaged = "󰄱",
+              staged = "",
+              conflict = "",
+            },
+          },
+          file_size = {
+            enabled = true,
+            required_width = 64,
+          },
+          type = {
+            enabled = true,
+            required_width = 122,
+          },
+          last_modified = {
+            enabled = true,
+            required_width = 88,
+          },
+          created = {
+            enabled = true,
+            required_width = 110,
+          },
+          symlink_target = {
+            enabled = false,
+          },
+        },
+        commands = {},
+        window = {
+          position = "left",
+          width = 40,
+          mapping_options = {
+            noremap = true,
+            nowait = true,
+          },
+          mappings = {
+            ["<space>"] = {
+              "toggle_node",
+              nowait = false,
+            },
+            ["<2-LeftMouse>"] = "open",
+            ["<cr>"] = "open",
+            ["<esc>"] = "cancel",
+            ["P"] = { "toggle_preview", config = { use_float = true, use_image_nvim = true } },
+            ["l"] = "focus_preview",
+            ["S"] = "open_split",
+            ["s"] = "open_vsplit",
+            ["t"] = "open_tabnew",
+            ["w"] = "open_with_window_picker",
+            ["C"] = "close_node",
+            ["z"] = "close_all_nodes",
+            ["a"] = {
+              "add",
+              config = {
+                show_path = "none",
+              },
+            },
+            ["A"] = "add_directory",
+            ["d"] = "delete",
+            ["r"] = "rename",
+            ["y"] = "copy_to_clipboard",
+            ["x"] = "cut_to_clipboard",
+            ["p"] = "paste_from_clipboard",
+            ["c"] = "copy",
+            ["m"] = "move",
+            ["q"] = "close_window",
+            ["R"] = "refresh",
+            ["?"] = "show_help",
+            ["<"] = "prev_source",
+            [">"] = "next_source",
+            ["i"] = "show_file_details",
+          },
+        },
+        nesting_rules = {},
+        filesystem = {
+          filtered_items = {
+            visible = false,
+            hide_dotfiles = false,
+            hide_gitignored = true,
+            hide_hidden = true,
+            hide_by_name = {},
+            hide_by_pattern = {},
+            always_show = {},
+            never_show = {},
+            never_show_by_pattern = {},
+          },
+          follow_current_file = {
+            enabled = true,
+            leave_dirs_open = false,
+          },
+          group_empty_dirs = false,
+          hijack_netrw_behavior = "open_default",
+          use_libuv_file_watcher = true,
+          window = {
+            mappings = {
+              ["<bs>"] = "navigate_up",
+              ["."] = "set_root",
+              ["H"] = "toggle_hidden",
+              ["/"] = "fuzzy_finder",
+              ["D"] = "fuzzy_finder_directory",
+              ["#"] = "fuzzy_sorter",
+              ["f"] = "filter_on_submit",
+              ["<c-x>"] = "clear_filter",
+              ["[g"] = "prev_git_modified",
+              ["]g"] = "next_git_modified",
+              ["o"] = { "show_help", nowait = false, config = { title = "Order by", prefix_key = "o" } },
+              ["oc"] = { "order_by_created", nowait = false },
+              ["od"] = { "order_by_diagnostics", nowait = false },
+              ["og"] = { "order_by_git_status", nowait = false },
+              ["om"] = { "order_by_modified", nowait = false },
+              ["on"] = { "order_by_name", nowait = false },
+              ["os"] = { "order_by_size", nowait = false },
+              ["ot"] = { "order_by_type", nowait = false },
+            },
+            fuzzy_finder_mappings = {
+              ["<down>"] = "move_cursor_down",
+              ["<C-n>"] = "move_cursor_down",
+              ["<up>"] = "move_cursor_up",
+              ["<C-p>"] = "move_cursor_up",
+            },
+          },
+          commands = {},
+        },
+        buffers = {
+          follow_current_file = {
+            enabled = true,
+            leave_dirs_open = false,
+          },
+          group_empty_dirs = true,
+          show_unloaded = true,
+          window = {
+            mappings = {
+              ["bd"] = "buffer_delete",
+              ["<bs>"] = "navigate_up",
+              ["."] = "set_root",
+              ["o"] = { "show_help", nowait = false, config = { title = "Order by", prefix_key = "o" } },
+              ["oc"] = { "order_by_created", nowait = false },
+              ["od"] = { "order_by_diagnostics", nowait = false },
+              ["om"] = { "order_by_modified", nowait = false },
+              ["on"] = { "order_by_name", nowait = false },
+              ["os"] = { "order_by_size", nowait = false },
+              ["ot"] = { "order_by_type", nowait = false },
+            },
+          },
+        },
+        git_status = {
+          window = {
+            position = "float",
+            mappings = {
+              ["A"] = "git_add_all",
+              ["gu"] = "git_unstage_file",
+              ["ga"] = "git_add_file",
+              ["gr"] = "git_revert_file",
+              ["gc"] = "git_commit",
+              ["gp"] = "git_push",
+              ["gg"] = "git_commit_and_push",
+              ["o"] = { "show_help", nowait = false, config = { title = "Order by", prefix_key = "o" } },
+              ["oc"] = { "order_by_created", nowait = false },
+              ["od"] = { "order_by_diagnostics", nowait = false },
+              ["om"] = { "order_by_modified", nowait = false },
+              ["on"] = { "order_by_name", nowait = false },
+              ["os"] = { "order_by_size", nowait = false },
+              ["ot"] = { "order_by_type", nowait = false },
+            },
+          },
+        },
+      })
+    end,
+  },
 
   -- yazi.nvim (file manager)
   {
@@ -67,7 +353,7 @@ return {
       { "<Leader>e", "<cmd>Yazi cwd<cr>", desc = "File explorer (cwd)" },
     },
     opts = {
-      open_for_directories = true,
+      open_for_directories = false,
     },
   },
 
@@ -83,11 +369,46 @@ return {
     },
   },
 
+  -- trouble.nvim (診断・LSP結果リスト)
+  {
+    "folke/trouble.nvim",
+    opts = {},
+    cmd = "Trouble",
+    keys = {
+      { "<Leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (project)" },
+      { "<Leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Diagnostics (buffer)" },
+      { "<Leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols" },
+      { "<Leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "LSP" },
+    },
+  },
+
+  -- diffview (git diff / マージ / ファイル履歴)
+  {
+    "sindrets/diffview.nvim",
+    cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
+    keys = {
+      { "<Leader>gd", "<cmd>DiffviewOpen<cr>", desc = "Git diff view" },
+      { "<Leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "File git history" },
+      { "<Leader>gH", "<cmd>DiffviewFileHistory<cr>", desc = "Project git history" },
+    },
+  },
+
   -- dropbar (winbar breadcrumbs)
   {
     "Bekaboo/dropbar.nvim",
-    enabled = false,
+    enabled = true,
     event = { "BufReadPre", "BufNewFile" },
+    opts = {},
+  },
+
+  -- close-buffers (バッファ一括削除)
+  {
+    "kazhala/close-buffers.nvim",
+    keys = {
+      { "<Leader>bo", function() require("close_buffers").delete({ type = "other" }) end, desc = "Close other buffers" },
+      { "<Leader>bh", function() require("close_buffers").delete({ type = "hidden", force = true }) end, desc = "Close hidden buffers" },
+      { "<Leader>ba", function() require("close_buffers").delete({ type = "all", force = true }) end, desc = "Close all buffers" },
+    },
     opts = {},
   },
 
@@ -103,25 +424,20 @@ return {
     },
     config = function()
       local colors = require("onenord.colors").load()
-      colors.mypink = colors.mypink or "#FFB2CC"
-      local switch_color = {
-        active = { fg = colors.active, bg = colors.mypink },
-        inactive = { fg = colors.active, bg = colors.light_gray },
-      }
 
       require("lualine").setup({
         options = {
           icons_enabled = true,
           theme = "auto",
-          section_separators = { left = "", right = "" },
-          component_separators = { left = "", right = "" },
+          section_separators = { left = "", right = "" },
+          component_separators = { left = "", right = "" },
           disabled_filetypes = {
             statusline = {},
             winbar = {},
           },
           ignore_focus = {},
           always_divide_middle = true,
-          always_show_tabline = true,
+          always_show_tabline = false,
           globalstatus = true,
           refresh = {
             statusline = 1000,
@@ -134,12 +450,13 @@ return {
             "mode",
           },
           lualine_b = {
+            "branch",
+            "diff",
             {
               "filename",
               file_status = true,
               newfile_status = true,
-              path = 1,
-              shorting_target = 40,
+              path = 0,
               symbols = { modified = "_󰷥", readonly = " ", newfile = "󰄛", unnamed = "[No Name]" },
             },
           },
@@ -165,7 +482,6 @@ return {
               update_in_insert = false,
               always_visible = false,
             },
-            { "navic" },
           },
           lualine_x = {
             {
@@ -175,6 +491,7 @@ return {
                 fg = "#ff9e64",
               },
             },
+            "encoding",
           },
           lualine_y = {
             {
@@ -185,8 +502,10 @@ return {
                 fg = colors.fg,
               },
             },
+            "progress",
           },
           lualine_z = {
+            "location",
             {
               "fileformat",
               icons_enabled = true,
@@ -210,63 +529,7 @@ return {
           lualine_y = {},
           lualine_z = {},
         },
-        tabline = {
-          lualine_a = {
-            {
-              "buffers",
-              show_filename_only = true,
-              hide_filename_extension = false,
-              show_modified_status = true,
-              mode = 0,
-              max_length = vim.o.columns * 2 / 3,
-              filetype_names = {
-                TelescopePrompt = "Telescope",
-                dashboard = "Dashboard",
-                packer = "Packer",
-                fzf = "FZF",
-                alpha = "Alpha",
-              },
-              use_mode_colors = false,
-              buffers_color = switch_color,
-              symbols = {
-                modified = "_󰷥",
-                alternate_file = " ",
-                directory = " ",
-              },
-            },
-          },
-          lualine_b = {},
-          lualine_c = {},
-          lualine_x = {
-            {
-              "diff",
-              colored = true,
-              symbols = {
-                added = " ",
-                modified = " ",
-                removed = " ",
-              },
-              source = nil,
-            },
-          },
-          lualine_y = {
-            {
-              "b:gitsigns_head",
-              icon = {
-                "",
-                color = {
-                  fg = colors.orange,
-                },
-              },
-              color = {
-                fg = colors.fg,
-              },
-            },
-          },
-          lualine_z = {
-            { "tabs", tabs_color = switch_color },
-          },
-        },
+        tabline = {},
         winbar = {},
         inactive_winbar = {},
         extensions = {},

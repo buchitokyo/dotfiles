@@ -100,6 +100,6 @@ vim.g.maplocalleader = " "
 -- Cursor のスタイルを適用するために guicursor を設定
 opt.guicursor = "n-v-c:block-Cursor,i-ci-ve:ver25-Cursor,r-cr-o:hor20-Cursor"
 
--- netrw 無効化（yazi.nvim を使用）
+-- netrw 無効化（neo-tree が代替）
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1

@@ -12,6 +12,9 @@ keymap("n", ";", ":", { noremap = true })
 -- ESC連打でハイライト解除
 keymap("n", "<Esc><Esc>", ":nohlsearch<CR>", opts)
 
+-- Ctrl+C を安全に（Cmd+C が端末に漏れた場合の対策）
+keymap("n", "<C-c>", "<Esc>", opts)
+
 -- 折り返し行でも見た目通りに移動
 keymap("n", "j", "gj", opts)
 keymap("n", "k", "gk", opts)
@@ -35,10 +38,14 @@ keymap("n", "<C-l>", "<C-w>l", opts)
 -- ============================================
 -- バッファ操作
 -- ============================================
-keymap("n", "<Leader>n", ":bnext<CR>", opts)
-keymap("n", "<Leader>p", ":bprevious<CR>", opts)
-keymap("n", "<Tab>", ":bnext<CR>", opts)
-keymap("n", "<S-Tab>", ":bprev<CR>", opts)
+keymap("n", "<Leader>n", ":BufferLineCycleNext<CR>", opts)
+keymap("n", "<Leader>p", ":BufferLineCyclePrev<CR>", opts)
+keymap("n", "<Tab>", function()
+  if vim.bo.filetype ~= "neo-tree" then vim.cmd("BufferLineCycleNext") end
+end, opts)
+keymap("n", "<S-Tab>", function()
+  if vim.bo.filetype ~= "neo-tree" then vim.cmd("BufferLineCyclePrev") end
+end, opts)
 keymap("n", "<Leader>d", ":bdelete<CR>", opts)
 
 -- ============================================
@@ -52,11 +59,16 @@ keymap("n", "<Leader>[", ":tabprevious<CR>", opts)
 -- ファイル操作
 -- ============================================
 keymap("n", "<Leader>w", ":w<CR>", opts)
+keymap("n", "<C-s>", ":w<CR>", opts)
+keymap("i", "<C-s>", "<C-o>:w<CR>", opts)
 keymap("n", "<Leader>q", ":q<CR>", opts)
 keymap("n", "<Leader>x", ":x<CR>", opts)
 
 -- 全選択
 keymap("n", "<Leader>a", "ggVG", opts)
+
+-- 全文コピー（システムクリップボード）
+keymap("n", "<Leader>y", ':%y+<CR>', opts)
 
 -- ============================================
 -- ビジュアルモード

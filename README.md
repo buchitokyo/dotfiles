@@ -192,6 +192,14 @@ Git リポジトリ内のファイル/ディレクトリに Git ステータス�
 | `z` | fzf でジャンプ |
 | `g` + `t` / `d` / `h` | /tmp / ~/Downloads / ~ へジャンプ |
 
+#### タブ操作
+
+| キー | 機能 |
+|------|------|
+| `t` | 新しいタブを作成 |
+| `[` / `]` | 前/次のタブに移動 |
+| `{` / `}` | タブを前/次の位置にスワップ |
+
 #### 表示
 
 | キー | 機能 |
@@ -240,21 +248,47 @@ Git リポジトリ内のファイル/ディレクトリに Git ステータス�
 - **LSP対応**（関数ジャンプ、補完、リネーム等）
 - プラグインマネージャ: lazy.nvim
 - 詳細なキー操作は [チートシート](nvim/CHEATSHEET.md) を参照
-- lualine.nvim（ステータスライン + タブライン：バッファ一覧・Git ブランチ・diff 表示）
-- nvim-navic（LSP パンくずリスト、lualine に統合）
-- dropbar.nvim（winbar パンくずリスト）
-- hlchunk.nvim（インデントブロックのハイライト）
-- noice.nvim（コマンドライン・検索のポップアップ UI）
-- which-key.nvim（キーバインドヘルプ表示）
-- Snacks.nvim（ファジーピッカー）
-- yazi.nvim（ファイルマネージャ）
-- nvim-treesitter-context（関数/クラスのコンテキスト固定表示）
-- nvim-scrollbar（スクロールバー + 診断マーク）
-- accelerated-jk.nvim（j/k 加速移動）
-- comment-box（コメントボックス作成）
-- namu.nvim（シンボルナビゲーション）
-- tiny-inline-diagnostic（エラー/警告のインライン表示）
-- copilot.lua + copilot-cmp（GitHub Copilot 補完）
+#### UI / 表示
+| プラグイン | 用途 | キー |
+|-----------|------|------|
+| [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) | ステータスライン（モード・ファイル名・診断・filetype） | - |
+| [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) | タブ/バッファライン（neo-tree オフセット対応） | `Tab` / `S-Tab` |
+| [dropbar.nvim](https://github.com/Bekaboo/dropbar.nvim) | winbar パンくずリスト（クリック可能なパス表示） | - |
+| [noice.nvim](https://github.com/folke/noice.nvim) | コマンドライン・検索のポップアップ UI | - |
+| [which-key.nvim](https://github.com/folke/which-key.nvim) | キーバインドヘルプ表示 | `Space ?` |
+| [hlchunk.nvim](https://github.com/shellRaining/hlchunk.nvim) | インデントブロックのハイライト | - |
+| [nvim-scrollbar](https://github.com/petertriho/nvim-scrollbar) | スクロールバー + 診断マーク | - |
+| [tiny-inline-diagnostic](https://github.com/rachartier/tiny-inline-diagnostic.nvim) | エラー/警告のインライン表示 | - |
+
+#### ファイル管理
+| プラグイン | 用途 | キー |
+|-----------|------|------|
+| [neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim) | サイドバー型ファイルツリー（git ステータス色表示） | `Space E` |
+| [yazi.nvim](https://github.com/mikavilpas/yazi.nvim) | フローティング型ファイルマネージャ | `-` / `Space e` |
+| [close-buffers.nvim](https://github.com/kazhala/close-buffers.nvim) | バッファ一括削除（他/非表示/全） | `Space bo/bh/ba` |
+
+#### 検索 / ナビゲーション
+| プラグイン | 用途 | キー |
+|-----------|------|------|
+| [Snacks.nvim](https://github.com/folke/snacks.nvim) | ファジーピッカー（ファイル・grep・バッファ等） | `Space ff/fg/fb` |
+| [trouble.nvim](https://github.com/folke/trouble.nvim) | 診断・LSP 結果のリスト表示 | `Space xx/xX/cs/cl` |
+| [namu.nvim](https://github.com/bassamsdata/namu.nvim) | シンボルナビゲーション | `Space ns` |
+| [nvim-hlslens](https://github.com/kevinhwang91/nvim-hlslens) | 検索ハイライト強化 | - |
+
+#### コーディング支援
+| プラグイン | 用途 | キー |
+|-----------|------|------|
+| [nvim-navic](https://github.com/SmiteshP/nvim-navic) | LSP パンくずリスト | - |
+| [nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context) | 関数/クラスのコンテキスト固定表示 | - |
+| [copilot.lua](https://github.com/zbirenbaum/copilot.lua) + copilot-cmp | GitHub Copilot 補完 | - |
+| [Comment.nvim](https://github.com/numToStr/Comment.nvim) | コメントトグル | `gcc` / `gc` |
+| [comment-box](https://github.com/LudoPinelli/comment-box.nvim) | コメントボックス作成 | `Space cb/cl` |
+| [accelerated-jk.nvim](https://github.com/rainbowhxch/accelerated-jk.nvim) | j/k 加速移動 | `j` / `k` |
+
+#### Git
+| プラグイン | 用途 | キー |
+|-----------|------|------|
+| [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | 行単位の git 差分・hunk 操作 | `Space hs/hr/hp` |
 
 #### 対応言語（LSP）
 

@@ -70,6 +70,19 @@ autocmd("ColorScheme", {
 })
 
 -- ============================================
+-- Terraform format on save
+-- ============================================
+local terraform_fmt = augroup("TerraformFormat", { clear = true })
+
+autocmd("BufWritePre", {
+  group = terraform_fmt,
+  pattern = { "*.tf", "*.tfvars" },
+  callback = function()
+    vim.lsp.buf.format({ async = false })
+  end,
+})
+
+-- ============================================
 -- ハイライト on yank
 -- ============================================
 local highlight_yank = augroup("HighlightYank", { clear = true })

@@ -55,6 +55,9 @@ shell-integration-features = cursor,sudo,title
 # 設定リロード
 keybind = cmd+shift+comma=reload_config
 
+# コピー（選択なしでも端末にキーを送らない）
+keybind = cmd+c=copy:clipboard
+
 # スプリット操作
 keybind = cmd+d=new_split:right
 keybind = cmd+shift+d=new_split:down
