@@ -70,13 +70,13 @@ return {
         offsets = {
           {
             filetype = "neo-tree",
-            text = "",
-            text_align = "left",
+            text = "Explorer",
+            text_align = "center",
             highlight = "Directory",
             separator = true,
-            padding = 1,
           },
         },
+        always_show_bufferline = true,
       },
     },
   },
@@ -101,8 +101,38 @@ return {
         callback = function(data)
           if vim.fn.isdirectory(data.file) == 1 then
             vim.cmd.cd(data.file)
-            require("neo-tree.command").execute({ toggle = false, dir = data.file })
+            vim.schedule(function()
+              require("neo-tree.command").execute({
+                source = "filesystem",
+                position = "left",
+                toggle = false,
+              })
+              -- ディレクトリバッファを非表示・自動削除にする
+              if vim.api.nvim_buf_is_valid(data.buf) then
+                vim.bo[data.buf].buflisted = false
+                vim.bo[data.buf].bufhidden = "wipe"
+                vim.bo[data.buf].buftype = "nofile"
+                vim.api.nvim_buf_set_lines(data.buf, 0, -1, false, {})
+              end
+            end)
           end
+        end,
+      })
+
+      -- neo-tree が唯一のウィンドウになったらスクラッチバッファを右に作る
+      vim.api.nvim_create_autocmd("WinClosed", {
+        callback = function()
+          vim.schedule(function()
+            local wins = vim.tbl_filter(function(w)
+              return vim.api.nvim_win_get_config(w).relative == ""
+            end, vim.api.nvim_list_wins())
+            if #wins == 1 and vim.bo[vim.api.nvim_win_get_buf(wins[1])].filetype == "neo-tree" then
+              vim.cmd("botright vnew")
+              vim.bo.buflisted = false
+              vim.bo.buftype = "nofile"
+              vim.bo.bufhidden = "wipe"
+            end
+          end)
         end,
       })
 
@@ -398,7 +428,20 @@ return {
     "Bekaboo/dropbar.nvim",
     enabled = true,
     event = { "BufReadPre", "BufNewFile" },
-    opts = {},
+    opts = {
+      bar = {
+        enable = function(buf, win, _)
+          if not vim.api.nvim_buf_is_valid(buf) or not vim.api.nvim_win_is_valid(win) then
+            return false
+          end
+          local ft = vim.bo[buf].filetype
+          if ft == "neo-tree" or ft == "neo-tree-popup" then
+            return false
+          end
+          return vim.fn.win_gettype(win) == ""
+        end,
+      },
+    },
   },
 
   -- close-buffers (バッファ一括削除)

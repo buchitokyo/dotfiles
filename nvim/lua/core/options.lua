@@ -38,6 +38,8 @@ opt.scrolloff = 5
 opt.sidescrolloff = 5
 opt.wrap = true
 opt.display = "lastline"
+opt.splitright = true
+opt.splitbelow = true
 
 -- シンタックス
 opt.termguicolors = true

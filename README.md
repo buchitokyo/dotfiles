@@ -33,7 +33,8 @@ git clone git@github.com:buchitokyo/dotfiles.git ~/dotfiles
 ```zsh
 brew install sheldon starship eza neovim lazygit tmux \
   yazi ffmpeg sevenzip jq poppler fd ripgrep fzf zoxide imagemagick \
-  font-symbols-only-nerd-font tree-sitter tree-sitter-cli
+  font-symbols-only-nerd-font tree-sitter tree-sitter-cli \
+  nodenv node-build
 ```
 
 | ツール | 用途 |
@@ -79,7 +80,33 @@ cargo install keifu filetree
 | [keifu](https://github.com/Syu-fu/keifu) | Git コミット履歴の系譜表示 |
 | [filetree](https://github.com/solidiquis/filetree) | ファイルツリー表示 |
 
-### 6. dotfiles をインストール
+### 6. Node.js 環境をセットアップ
+
+```zsh
+# nodenv をインストール
+brew install nodenv node-build
+
+# シェルに nodenv を初期化（.zshrc に記載済み）
+eval "$(nodenv init -)"
+
+# Node.js をインストール
+nodenv install 22.17.0
+nodenv global 22.17.0
+```
+
+グローバル npm パッケージをインストール：
+
+```zsh
+npm install -g @anthropic-ai/claude-code ccmanager
+```
+
+| ツール | 用途 |
+|--------|------|
+| [nodenv](https://github.com/nodenv/nodenv) | Node.js バージョン管理 |
+| [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | AI コーディングアシスタント（CLI） |
+| [ccmanager](https://github.com/jasonjmcghee/ccmanager) | Claude Code の並行セッション管理（`npx ccmanager` で利用） |
+
+### 7. dotfiles をインストール
 
 ```zsh
 cd ~/dotfiles
@@ -87,7 +114,7 @@ chmod +x install.sh
 ./install.sh
 ```
 
-### 7. シェルを再起動
+### 8. シェルを再起動
 
 ```zsh
 exec zsh

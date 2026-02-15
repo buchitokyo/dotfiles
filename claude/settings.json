@@ -47,67 +47,6 @@
       "Write(**/secrets/**)"
     ]
   },
-  "hooks": {
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/Users/hirotoshikawabuchi/Library/Application Support/CCStatusBar/bin/CCStatusBar\" hook Notification"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/Users/hirotoshikawabuchi/Library/Application Support/CCStatusBar/bin/CCStatusBar\" hook PreToolUse"
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/Users/hirotoshikawabuchi/Library/Application Support/CCStatusBar/bin/CCStatusBar\" hook SessionEnd"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/Users/hirotoshikawabuchi/Library/Application Support/CCStatusBar/bin/CCStatusBar\" hook SessionStart"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/Users/hirotoshikawabuchi/Library/Application Support/CCStatusBar/bin/CCStatusBar\" hook Stop"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/Users/hirotoshikawabuchi/Library/Application Support/CCStatusBar/bin/CCStatusBar\" hook UserPromptSubmit"
-          }
-        ]
-      }
-    ]
-  },
+  "hooks": {},
   "skipDangerousModePermissionPrompt": true
 }

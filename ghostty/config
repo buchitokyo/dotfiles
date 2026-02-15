@@ -55,8 +55,9 @@ shell-integration-features = cursor,sudo,title
 # 設定リロード
 keybind = cmd+shift+comma=reload_config
 
-# コピー（選択なしでも端末にキーを送らない）
-keybind = cmd+c=copy:clipboard
+# Neovim に Cmd キーを渡す（Ghostty のデフォルトを無効化）
+keybind = cmd+z=unbind
+keybind = cmd+a=unbind
 
 # スプリット操作
 keybind = cmd+d=new_split:right
