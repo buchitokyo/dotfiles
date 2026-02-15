@@ -73,3 +73,6 @@ keybind = ctrl+cmd+l=goto_split:right
 # プロンプト間ジャンプ
 keybind = cmd+up=jump_to_prompt:-1
 keybind = cmd+down=jump_to_prompt:1
+
+# Shift+Enter を通常の Enter として送信
+keybind = shift+enter=text:\n
