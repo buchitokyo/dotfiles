@@ -70,7 +70,7 @@ return {
         offsets = {
           {
             filetype = "neo-tree",
-            text = "Explorer",
+            text = "Neo Tree",
             text_align = "center",
             highlight = "Directory",
             separator = true,
@@ -169,20 +169,9 @@ return {
             expander_highlight = "NeoTreeExpander",
           },
           icon = {
-            folder_closed = "",
-            folder_open = "",
+            folder_closed = "",
+            folder_open = "",
             folder_empty = "󰜌",
-            provider = function(icon, node)
-              if node.type == "file" or node.type == "terminal" then
-                local success, web_devicons = pcall(require, "nvim-web-devicons")
-                local name = node.type == "terminal" and "terminal" or node.name
-                if success then
-                  local devicon, hl = web_devicons.get_icon(name)
-                  icon.text = devicon or icon.text
-                  icon.highlight = hl or icon.highlight
-                end
-              end
-            end,
             default = "*",
             highlight = "NeoTreeFileIcon",
           },

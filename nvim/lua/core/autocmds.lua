@@ -68,8 +68,15 @@ autocmd("ColorScheme", {
     vim.api.nvim_set_hl(0, "Visual", { bg = "#45475a", fg = "#cdd6f4" })
 
     -- neo-tree: git ステータスの色を見やすく
-    vim.api.nvim_set_hl(0, "NeoTreeGitUntracked", { fg = "#73daca" })
-    vim.api.nvim_set_hl(0, "NeoTreeGitAdded", { fg = "#9ece6a" })
+    vim.api.nvim_set_hl(0, "NeoTreeGitAdded", { fg = "#9ece6a", bold = true })     -- 追加: 緑
+    vim.api.nvim_set_hl(0, "NeoTreeGitModified", { fg = "#e0af68", bold = true })  -- 変更: 黄
+    vim.api.nvim_set_hl(0, "NeoTreeGitDeleted", { fg = "#f7768e", bold = true })   -- 削除: 赤
+    vim.api.nvim_set_hl(0, "NeoTreeGitUntracked", { fg = "#ff9e64", bold = true }) -- 未追跡: オレンジ
+    vim.api.nvim_set_hl(0, "NeoTreeGitConflict", { fg = "#f7768e", bold = true })  -- コンフリクト: 赤
+    vim.api.nvim_set_hl(0, "NeoTreeGitUnstaged", { fg = "#e0af68" })               -- unstaged: 黄
+    vim.api.nvim_set_hl(0, "NeoTreeGitStaged", { fg = "#9ece6a" })                 -- staged: 緑
+    -- neo-tree: フォルダアイコンの色
+    vim.api.nvim_set_hl(0, "NeoTreeDirectoryIcon", { fg = "#7aa2f7" })
   end,
 })
 
