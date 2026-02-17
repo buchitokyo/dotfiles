@@ -27,26 +27,26 @@ return {
     priority = 900,
     keys = {
       -- f系（従来のTelescope互換）
-      { "<Leader>ff", function() Snacks.picker.files() end, desc = "Find files" },
-      { "<Leader>fg", function() Snacks.picker.grep() end, desc = "Live grep" },
-      { "<Leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
-      { "<Leader>fw", function() Snacks.picker.grep_word() end, desc = "Grep word", mode = { "n", "v" } },
-      { "<Leader>fh", function() Snacks.picker.help() end, desc = "Help tags" },
-      { "<Leader>fr", function() Snacks.picker.lsp_references() end, desc = "LSP references" },
-      { "<Leader>fs", function() Snacks.picker.lsp_symbols() end, desc = "Document symbols" },
+      { "<Leader>ff",       function() Snacks.picker.files() end,          desc = "Find files" },
+      { "<Leader>fg",       function() Snacks.picker.grep() end,           desc = "Live grep" },
+      { "<Leader>fb",       function() Snacks.picker.buffers() end,        desc = "Buffers" },
+      { "<Leader>fw",       function() Snacks.picker.grep_word() end,      desc = "Grep word",         mode = { "n", "v" } },
+      { "<Leader>fh",       function() Snacks.picker.help() end,           desc = "Help tags" },
+      { "<Leader>fr",       function() Snacks.picker.lsp_references() end, desc = "LSP references" },
+      { "<Leader>fs",       function() Snacks.picker.lsp_symbols() end,    desc = "Document symbols" },
       -- s系（Snacks Picker拡張）
-      { "<Leader><Leader>", function() Snacks.picker.smart() end, desc = "Smart picker" },
-      { "<Leader>sf", function() Snacks.picker.files() end, desc = "Find files" },
-      { "<Leader>sg", function() Snacks.picker.grep() end, desc = "Grep" },
-      { "<Leader>sw", function() Snacks.picker.grep_word() end, desc = "Grep cursor word" },
-      { "<Leader>sb", function() Snacks.picker.buffers() end, desc = "Buffers" },
-      { "<Leader>sr", function() Snacks.picker.recent() end, desc = "Recent files" },
-      { "<Leader>sc", function() Snacks.picker.commands() end, desc = "Commands" },
-      { "<Leader>sh", function() Snacks.picker.help() end, desc = "Help" },
-      { "<Leader>sk", function() Snacks.picker.keymaps() end, desc = "Keymaps" },
-      { "<Leader>sd", function() Snacks.picker.diagnostics() end, desc = "Diagnostics" },
-      { "<Leader>ss", function() Snacks.picker.lsp_symbols() end, desc = "LSP symbols" },
-      { "<Leader>sR", function() Snacks.picker.resume() end, desc = "Resume last picker" },
+      { "<Leader><Leader>", function() Snacks.picker.smart() end,          desc = "Smart picker" },
+      { "<Leader>sf",       function() Snacks.picker.files() end,          desc = "Find files" },
+      { "<Leader>sg",       function() Snacks.picker.grep() end,           desc = "Grep" },
+      { "<Leader>sw",       function() Snacks.picker.grep_word() end,      desc = "Grep cursor word" },
+      { "<Leader>sb",       function() Snacks.picker.buffers() end,        desc = "Buffers" },
+      { "<Leader>sr",       function() Snacks.picker.recent() end,         desc = "Recent files" },
+      { "<Leader>sc",       function() Snacks.picker.commands() end,       desc = "Commands" },
+      { "<Leader>sh",       function() Snacks.picker.help() end,           desc = "Help" },
+      { "<Leader>sk",       function() Snacks.picker.keymaps() end,        desc = "Keymaps" },
+      { "<Leader>sd",       function() Snacks.picker.diagnostics() end,    desc = "Diagnostics" },
+      { "<Leader>ss",       function() Snacks.picker.lsp_symbols() end,    desc = "LSP symbols" },
+      { "<Leader>sR",       function() Snacks.picker.resume() end,         desc = "Resume last picker" },
     },
     opts = {
       picker = {
@@ -92,7 +92,7 @@ return {
       "MunifTanjim/nui.nvim",
     },
     keys = {
-      { "<Leader>E", "<cmd>Neotree toggle<cr>", desc = "Toggle file tree" },
+      { "<Leader>E",  "<cmd>Neotree toggle<cr>",            desc = "Toggle file tree" },
       { "<Leader>gE", "<cmd>Neotree toggle git_status<cr>", desc = "Git status tree" },
     },
     config = function()
@@ -369,7 +369,7 @@ return {
     lazy = false,
     dependencies = { "nvim-lua/plenary.nvim" },
     keys = {
-      { "-", "<cmd>Yazi<cr>", desc = "Open yazi (current file)" },
+      { "-",         "<cmd>Yazi<cr>",     desc = "Open yazi (current file)" },
       { "<Leader>e", "<cmd>Yazi cwd<cr>", desc = "File explorer (cwd)" },
     },
     opts = {
@@ -395,9 +395,9 @@ return {
     opts = {},
     cmd = "Trouble",
     keys = {
-      { "<Leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (project)" },
-      { "<Leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Diagnostics (buffer)" },
-      { "<Leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols" },
+      { "<Leader>xx", "<cmd>Trouble diagnostics toggle<cr>",                        desc = "Diagnostics (project)" },
+      { "<Leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",           desc = "Diagnostics (buffer)" },
+      { "<Leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>",                desc = "Symbols" },
       { "<Leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "LSP" },
     },
   },
@@ -407,9 +407,9 @@ return {
     "sindrets/diffview.nvim",
     cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
     keys = {
-      { "<Leader>gd", "<cmd>DiffviewOpen<cr>", desc = "Git diff view" },
+      { "<Leader>gd", "<cmd>DiffviewOpen<cr>",          desc = "Git diff view" },
       { "<Leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "File git history" },
-      { "<Leader>gH", "<cmd>DiffviewFileHistory<cr>", desc = "Project git history" },
+      { "<Leader>gH", "<cmd>DiffviewFileHistory<cr>",   desc = "Project git history" },
     },
   },
 
@@ -438,9 +438,9 @@ return {
   {
     "kazhala/close-buffers.nvim",
     keys = {
-      { "<Leader>bo", function() require("close_buffers").delete({ type = "other" }) end, desc = "Close other buffers" },
+      { "<Leader>bo", function() require("close_buffers").delete({ type = "other" }) end,                desc = "Close other buffers" },
       { "<Leader>bh", function() require("close_buffers").delete({ type = "hidden", force = true }) end, desc = "Close hidden buffers" },
-      { "<Leader>ba", function() require("close_buffers").delete({ type = "all", force = true }) end, desc = "Close all buffers" },
+      { "<Leader>ba", function() require("close_buffers").delete({ type = "all", force = true }) end,    desc = "Close all buffers" },
     },
     opts = {},
   },
@@ -584,8 +584,8 @@ return {
   {
     "numToStr/Comment.nvim",
     keys = {
-      { "gcc", mode = "n", desc = "Comment line" },
-      { "gc", mode = { "n", "v" }, desc = "Comment" },
+      { "gcc", mode = "n",          desc = "Comment line" },
+      { "gc",  mode = { "n", "v" }, desc = "Comment" },
     },
     config = true,
   },
@@ -594,16 +594,16 @@ return {
   { import = "plugins.avante" },
 
   -- indent-blankline (indent guide)
---   {
---     "lukas-reineke/indent-blankline.nvim",
---     main = "ibl",
---     event = { "BufReadPre", "BufNewFile" },
---     opts = {
---       indent = { char = "│" },
---       scope = { enabled = true, show_start = true, show_end = false },
---       exclude = { filetypes = { "help", "dashboard", "lazy", "mason", "oil" } },
---     },
---   },
+  --   {
+  --     "lukas-reineke/indent-blankline.nvim",
+  --     main = "ibl",
+  --     event = { "BufReadPre", "BufNewFile" },
+  --     opts = {
+  --       indent = { char = "│" },
+  --       scope = { enabled = true, show_start = true, show_end = false },
+  --       exclude = { filetypes = { "help", "dashboard", "lazy", "mason", "oil" } },
+  --     },
+  --   },
 
   -- hlchunk (chunk highlight)
   {
@@ -852,7 +852,7 @@ return {
   {
     "LudoPinelli/comment-box.nvim",
     keys = {
-      { "<Leader>cb", "<cmd>CBccbox<cr>", mode = { "n", "v" }, desc = "Comment box" },
+      { "<Leader>cb", "<cmd>CBccbox<cr>",  mode = { "n", "v" }, desc = "Comment box" },
       { "<Leader>cl", "<cmd>CBccline<cr>", mode = { "n", "v" }, desc = "Comment line" },
     },
   },
@@ -879,8 +879,8 @@ return {
     cmd = { "MurenToggle", "MurenOpen", "MurenFresh", "MurenUnique" },
     keys = {
       { "<Leader>mut", "<cmd>MurenToggle<cr>", desc = "Muren toggle" },
-      { "<Leader>muf", "<cmd>MurenFresh<cr>", desc = "Muren fresh" },
-      { "<Leader>mu", "<cmd>MurenUnique<cr>", desc = "Muren unique" },
+      { "<Leader>muf", "<cmd>MurenFresh<cr>",  desc = "Muren fresh" },
+      { "<Leader>mu",  "<cmd>MurenUnique<cr>", desc = "Muren unique" },
     },
     config = true,
   },
