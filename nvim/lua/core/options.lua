@@ -73,8 +73,12 @@ opt.hlsearch = true
 -- クリップボード
 -- ============================================
 opt.clipboard = "unnamedplus"
--- SSH/devcontainer 環境のみ OSC 52 を使用（ローカルは macOS 標準の pbcopy/pbpaste）
-if os.getenv("SSH_TTY") or os.getenv("REMOTE_CONTAINERS") or os.getenv("CODESPACES") then
+-- SSH/Docker/devcontainer 環境のみ OSC 52 を使用（ローカルは macOS 標準の pbcopy/pbpaste）
+if os.getenv("SSH_TTY")
+  or os.getenv("REMOTE_CONTAINERS")
+  or os.getenv("CODESPACES")
+  or os.getenv("container")
+  or vim.fn.filereadable("/.dockerenv") == 1 then
   vim.g.clipboard = {
     name = "OSC 52",
     copy = {
