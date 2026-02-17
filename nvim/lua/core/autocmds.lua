@@ -74,15 +74,20 @@ autocmd("ColorScheme", {
 })
 
 -- ============================================
--- Terraform format on save
+-- 保存時に自動フォーマット（LSP）
 -- ============================================
-local terraform_fmt = augroup("TerraformFormat", { clear = true })
+local format_on_save = augroup("FormatOnSave", { clear = true })
 
 autocmd("BufWritePre", {
-  group = terraform_fmt,
-  pattern = { "*.tf", "*.tfvars" },
+  group = format_on_save,
   callback = function()
-    vim.lsp.buf.format({ async = false })
+    local clients = vim.lsp.get_clients({ bufnr = 0 })
+    local has_formatter = vim.iter(clients):any(function(c)
+      return c.supports_method("textDocument/formatting")
+    end)
+    if has_formatter then
+      vim.lsp.buf.format({ async = false, timeout_ms = 3000 })
+    end
   end,
 })
 

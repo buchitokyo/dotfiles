@@ -73,17 +73,20 @@ opt.hlsearch = true
 -- クリップボード
 -- ============================================
 opt.clipboard = "unnamedplus"
-vim.g.clipboard = {
-  name = "OSC 52",
-  copy = {
-    ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
-    ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
-  },
-  paste = {
-    ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
-    ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
-  },
-}
+-- SSH/devcontainer 環境のみ OSC 52 を使用（ローカルは macOS 標準の pbcopy/pbpaste）
+if os.getenv("SSH_TTY") or os.getenv("REMOTE_CONTAINERS") or os.getenv("CODESPACES") then
+  vim.g.clipboard = {
+    name = "OSC 52",
+    copy = {
+      ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+      ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+    },
+    paste = {
+      ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+      ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+    },
+  }
+end
 
 -- ============================================
 -- マウス
@@ -96,6 +99,12 @@ opt.mouse = "a"
 opt.wildmode = "list:longest,full"
 opt.wildmenu = true
 opt.completeopt = "menuone,noinsert,noselect"
+
+-- ============================================
+-- パフォーマンス
+-- ============================================
+opt.updatetime = 250
+opt.timeoutlen = 300
 
 -- ============================================
 -- その他
