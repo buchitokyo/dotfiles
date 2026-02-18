@@ -71,7 +71,7 @@ autocmd("ColorScheme", {
     vim.api.nvim_set_hl(0, "NeoTreeGitAdded", { fg = "#9ece6a", bold = true })     -- 追加: 緑
     vim.api.nvim_set_hl(0, "NeoTreeGitModified", { fg = "#e0af68", bold = true })  -- 変更: 黄
     vim.api.nvim_set_hl(0, "NeoTreeGitDeleted", { fg = "#f7768e", bold = true })   -- 削除: 赤
-    vim.api.nvim_set_hl(0, "NeoTreeGitUntracked", { fg = "#ff9e64", bold = true }) -- 未追跡: オレンジ
+    vim.api.nvim_set_hl(0, "NeoTreeGitUntracked", { fg = "#a8d8b9", bold = true }) -- 未追跡: パステルグリーン
     vim.api.nvim_set_hl(0, "NeoTreeGitConflict", { fg = "#f7768e", bold = true })  -- コンフリクト: 赤
     vim.api.nvim_set_hl(0, "NeoTreeGitUnstaged", { fg = "#e0af68" })               -- unstaged: 黄
     vim.api.nvim_set_hl(0, "NeoTreeGitStaged", { fg = "#9ece6a" })                 -- staged: 緑
