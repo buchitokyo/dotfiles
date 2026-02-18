@@ -10,28 +10,26 @@ tmux has-session -t "$SESSION" 2>/dev/null && exec tmux attach -t "$SESSION"
 
 # 新規セッション（左上: nvim）
 tmux new-session -d -s "$SESSION" -c "$DIR" -x "$(tput cols)" -y "$(tput lines)"
-tmux send-keys -t "$SESSION" "nvim ." Enter
+NVIM_PANE=$(tmux display-message -t "$SESSION" -p '#{pane_id}')
+tmux send-keys -t "$NVIM_PANE" "nvim ." Enter
 
-# 右上: ccmanager
-tmux split-window -h -t "$SESSION" -c "$DIR"
-tmux send-keys -t "$SESSION" "ccmanager" Enter
+# 右上: ccmanager（左を水平分割）
+tmux split-window -h -t "$NVIM_PANE" -c "$DIR"
+CC_PANE=$(tmux display-message -t "$SESSION" -p '#{pane_id}')
+tmux send-keys -t "$CC_PANE" "ccmanager" Enter
 
-# 左下: terminal（左上ペインを分割）
-tmux select-pane -t "$SESSION:.1"
-tmux split-window -v -t "$SESSION" -c "$DIR"
+# 左下: terminal（左上ペインを垂直分割）
+tmux split-window -v -t "$NVIM_PANE" -c "$DIR"
 
-# 右下: terminal（右上ペインを分割）
-tmux select-pane -t "$SESSION:.2"
-tmux split-window -v -t "$SESSION" -c "$DIR"
+# 右下: terminal（右上ペインを垂直分割）
+tmux split-window -v -t "$CC_PANE" -c "$DIR"
 
-# レイアウト調整
-tmux select-pane -t "$SESSION:.1"
-tmux resize-pane -x 60%
-tmux resize-pane -t "$SESSION:.1" -y 70%
-tmux resize-pane -t "$SESSION:.2" -y 70%
+# レイアウト調整（左列60%幅、上段70%高さ）
+tmux resize-pane -t "$NVIM_PANE" -x 60% -y 70%
+tmux resize-pane -t "$CC_PANE" -y 70%
 
 # 左上（nvim）にフォーカス
-tmux select-pane -t "$SESSION:.1"
+tmux select-pane -t "$NVIM_PANE"
 
 # 接続
 tmux attach -t "$SESSION"
