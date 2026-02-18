@@ -55,10 +55,6 @@ shell-integration-features = sudo,title
 # 設定リロード
 keybind = cmd+shift+comma=reload_config
 
-# Neovim に Cmd キーを渡す（Ghostty のデフォルトを無効化）
-keybind = cmd+z=unbind
-keybind = cmd+a=unbind
-
 # スプリット操作
 keybind = cmd+d=new_split:right
 keybind = cmd+shift+d=new_split:down
@@ -76,3 +72,20 @@ keybind = cmd+down=jump_to_prompt:1
 
 # Shift+Enter を通常の Enter として送信
 keybind = shift+enter=text:\n
+
+# ========================================
+# Cmd キーを Neovim に転送（エスケープシーケンス経由）
+# ※ cmd+c / cmd+v はGhosttyの標準コピペを維持するため除外
+# ========================================
+keybind = cmd+s=csi:115;9~
+keybind = cmd+z=csi:122;9~
+keybind = cmd+y=csi:121;9~
+keybind = cmd+a=csi:97;9~
+keybind = cmd+slash=csi:47;9~
+keybind = cmd+p=csi:112;9~
+keybind = cmd+b=csi:98;9~
+keybind = cmd+j=csi:106;9~
+keybind = cmd+grave_accent=csi:96;9~
+keybind = cmd+shift+f=csi:70;10~
+keybind = cmd+shift+p=csi:80;10~
+keybind = cmd+shift+j=csi:74;10~

@@ -4,6 +4,37 @@ local keymap = vim.keymap.set
 local opts = { noremap = true, silent = true }
 
 -- ============================================
+-- Cmd キーマッピング（<D-*> = Neovim CSI u デコード後）
+-- ============================================
+-- Cmd+S → 保存
+keymap("n", "<D-s>", ":w<CR>", opts)
+keymap("i", "<D-s>", "<C-o>:w<CR>", opts)
+
+-- Cmd+Z → undo
+keymap("n", "<D-z>", "u", opts)
+keymap("i", "<D-z>", "<C-o>u", opts)
+
+-- Cmd+Y → redo
+keymap("n", "<D-y>", "<C-r>", opts)
+keymap("i", "<D-y>", "<C-o><C-r>", opts)
+
+-- Cmd+A → 全選択
+keymap("n", "<D-a>", "ggVG", opts)
+
+-- Cmd+C → コピー（ビジュアル: ヤンク / ノーマル: 無効）
+keymap("v", "<D-c>", '"+y', opts)
+keymap("n", "<D-c>", "<Esc>", opts)
+
+-- Cmd+V → 貼り付け
+keymap("n", "<D-v>", '"+p', opts)
+keymap("i", "<D-v>", '<C-r>+', opts)
+keymap("v", "<D-v>", '"+p', opts)
+
+-- Cmd+/ → コメントトグル
+keymap("n", "<D-/>", function() require("Comment.api").toggle.linewise.current() end, opts)
+keymap("v", "<D-/>", "<Esc><Cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", opts)
+
+-- ============================================
 -- 一般
 -- ============================================
 -- ; でコマンドモード（Shift不要）
@@ -11,20 +42,6 @@ keymap("n", ";", ":", { noremap = true })
 
 -- ESC連打でハイライト解除
 keymap("n", "<Esc><Esc>", ":nohlsearch<CR>", opts)
-
--- Cmd+C: ノーマルでは無害化、ビジュアルではヤンク（コピー）
-keymap("n", "<D-c>", "<Esc>", opts)
-keymap("v", "<D-c>", "y", opts)
-
--- Cmd+/ → コメントトグル（Comment.nvim）
-keymap("n", "<D-/>", function() require("Comment.api").toggle.linewise.current() end, opts)
-keymap("v", "<D-/>", "<Esc><Cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", opts)
-
--- Cmd+Z → アンドゥ / Cmd+Y → リドゥ
-keymap("n", "<D-z>", "u", opts)
-keymap("i", "<D-z>", "<C-o>u", opts)
-keymap("n", "<D-y>", "<C-r>", opts)
-keymap("i", "<D-y>", "<C-o><C-r>", opts)
 
 -- 折り返し行でも見た目通りに移動
 keymap("n", "j", "gj", opts)
@@ -39,12 +56,8 @@ keymap("v", "H", "^", opts)
 keymap("v", "L", "$", opts)
 
 -- ============================================
--- ウィンドウ操作
+-- ウィンドウ操作 (vim-tmux-navigator で管理)
 -- ============================================
-keymap("n", "<C-h>", "<C-w>h", opts)
-keymap("n", "<C-j>", "<C-w>j", opts)
-keymap("n", "<C-k>", "<C-w>k", opts)
-keymap("n", "<C-l>", "<C-w>l", opts)
 
 -- ============================================
 -- バッファ操作
@@ -70,14 +83,11 @@ keymap("n", "<Leader>[", ":tabprevious<CR>", opts)
 -- ファイル操作
 -- ============================================
 keymap("n", "<Leader>w", ":w<CR>", opts)
-keymap("n", "<D-s>", ":w<CR>", opts)
-keymap("i", "<D-s>", "<C-o>:w<CR>", opts)
 keymap("n", "<Leader>q", ":q<CR>", opts)
 keymap("n", "<Leader>x", ":x<CR>", opts)
 
 -- 全選択
 keymap("n", "<Leader>a", "ggVG", opts)
-keymap("n", "<D-a>", "ggVG", opts)
 
 -- 全文コピー（システムクリップボード）
 keymap("n", "<Leader>y", ':%y+<CR>', opts)

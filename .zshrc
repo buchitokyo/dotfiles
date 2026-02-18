@@ -64,6 +64,9 @@ alias vi="nvim"
 # Claude Code（tmux セッションで起動）
 alias cc='tmux new-session -A -s claude "claude"'
 
+# 開発用 tmux レイアウト（nvim + claude + terminal x2）
+alias dev='~/.config/tmux/dev-layout.sh'
+
 # yazi: ファイルマネージャ (終了時にディレクトリ移動)
 function y() {
   local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
@@ -147,3 +150,10 @@ eval "$(fzf --zsh)"
 
 # zoxide: スマートcd
 eval "$(zoxide init zsh --cmd z)"
+
+# Ghostty Cmd キーのエスケープシーケンスを無視（シェル上でゴミ文字防止）
+for seq in "\e[112;9~" "\e[70;10~" "\e[80;10~" "\e[98;9~" "\e[47;9~" \
+           "\e[96;9~" "\e[106;9~" "\e[74;10~" "\e[115;9~" "\e[122;9~" "\e[121;9~" \
+           "\e[97;9~" "\e[99;9~" "\e[118;9~"; do
+  bindkey -s "$seq" ""
+done

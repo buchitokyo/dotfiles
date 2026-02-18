@@ -129,7 +129,7 @@ dotfiles/
 │   └── lua/
 │       ├── core/               # 基本設定・キーマップ
 │       ├── config/             # lazy.nvim 設定
-│       └── plugins/            # プラグイン設定
+│       └── plugins/            # プラグイン設定（プラグインごとに分割）
 ├── tmux/                       # tmux（~/.config/tmux）
 │   ├── tmux.conf
 │   ├── toggle-claude-pane.sh   # Claude Code ペイントグル
@@ -297,7 +297,7 @@ Git リポジトリ内のファイル/ディレクトリに Git ステータス�
 #### 検索 / ナビゲーション
 | プラグイン | 用途 | キー |
 |-----------|------|------|
-| [Snacks.nvim](https://github.com/folke/snacks.nvim) | ファジーピッカー（ファイル・grep・バッファ等） | `Space ff/fg/fb` |
+| [Snacks.nvim](https://github.com/folke/snacks.nvim) | ファジーピッカー・ダッシュボード | `Space ff/fg/fb` |
 | [trouble.nvim](https://github.com/folke/trouble.nvim) | 診断・LSP 結果のリスト表示 | `Space xx/xX/cs/cl` |
 | [namu.nvim](https://github.com/bassamsdata/namu.nvim) | シンボルナビゲーション | `Space ns` |
 | [nvim-hlslens](https://github.com/kevinhwang91/nvim-hlslens) | 検索ハイライト強化 | - |
@@ -312,10 +312,16 @@ Git リポジトリ内のファイル/ディレクトリに Git ステータス�
 | [comment-box](https://github.com/LudoPinelli/comment-box.nvim) | コメントボックス作成 | `Space cb/cl` |
 | [accelerated-jk.nvim](https://github.com/rainbowhxch/accelerated-jk.nvim) | j/k 加速移動 | `j` / `k` |
 
+#### ナビゲーション連携
+| プラグイン | 用途 | キー |
+|-----------|------|------|
+| [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) | Neovim スプリット ↔ tmux ペイン間のシームレス移動 | `Ctrl+h/j/k/l` |
+
 #### Git
 | プラグイン | 用途 | キー |
 |-----------|------|------|
 | [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | 行単位の git 差分・hunk 操作 | `Space hs/hr/hp` |
+| [diffview.nvim](https://github.com/sindrets/diffview.nvim) | Git diff / マージ / ファイル履歴 | `Space gd/gh/gH` |
 
 #### 対応言語（LSP）
 
@@ -339,7 +345,7 @@ Git リポジトリ内のファイル/ディレクトリに Git ステータス�
 | `数字G` / `:数字` | 指定行にジャンプ（例: `42G`、`:42`） |
 | `Esc Esc` | 検索ハイライト解除 |
 | `Space a` | 全選択 |
-| `Ctrl+h/j/k/l` | ウィンドウ移動 |
+| `Ctrl+h/j/k/l` | ウィンドウ/tmux ペイン移動（vim-tmux-navigator） |
 | `Space d` | バッファ削除 |
 | `Space t` | 新規タブ |
 | `Space cd` | 現在のファイルのディレクトリに移動 |
@@ -398,9 +404,63 @@ Git リポジトリ内のファイル/ディレクトリに Git ステータス�
 | `Cmd+↑` / `Cmd+↓` | プロンプト間ジャンプ |
 | `Cmd+Shift+,` | 設定リロード |
 
+#### Cmd キーパススルー（Neovim 連携）
+
+Ghostty → tmux → Neovim の経路で Cmd キーを転送。Neovim 内で IDE 風のショートカットが使える。
+
+| キー | Neovim での動作 |
+|------|------|
+| `Cmd+S` | 保存 |
+| `Cmd+Z` | undo |
+| `Cmd+Y` | redo |
+| `Cmd+P` | 割り当て可能 |
+| `Cmd+B` | 割り当て可能 |
+| `Cmd+/` | 割り当て可能 |
+| `Cmd+J` | 割り当て可能 |
+| `Cmd+Shift+F` | 割り当て可能 |
+| `Cmd+Shift+P` | 割り当て可能 |
+| `Cmd+Shift+J` | 割り当て可能 |
+| `` Cmd+` `` | 割り当て可能 |
+
 ### tmux（ターミナルマルチプレクサ）
 
 セッション管理・ペイン分割でターミナル作業を効率化。Prefix は `Ctrl+a`。
+
+#### 開発用レイアウト（`dev` コマンド）
+
+4ペイン構成で開発環境を一発起動。tmux-resurrect でセッション保存・復元も可能。
+
+```
+┌──────────────┬──────────────┐
+│              │              │
+│    nvim      │  ccmanager   │
+│   (60%)      │   (40%)      │
+│              │              │
+├──────────────┼──────────────┤
+│   terminal   │   terminal   │
+│   (30%)      │   (30%)      │
+└──────────────┴──────────────┘
+```
+
+| コマンド | 機能 |
+|---------|------|
+| `dev` | カレントディレクトリで起動（セッション名: dev） |
+| `dev myproject` | セッション名を指定して起動 |
+| `dev myproject ~/code/proj` | セッション名 + ディレクトリ指定 |
+| `prefix + Ctrl+s` | レイアウトを保存（tmux-resurrect） |
+| `prefix + Ctrl+r` | レイアウトを復元（tmux-resurrect） |
+| `prefix + :` → `kill-session` | 現在のセッションを終了 |
+| `tmux kill-session -t dev` | 指定セッションを終了（外部から） |
+| `tmux kill-server` | tmux 全体を終了 |
+
+複数プロジェクトを並行する場合はセッション名を変えて起動：
+
+```zsh
+dev project-a ~/code/project-a
+dev project-b ~/code/project-b
+```
+
+`prefix + T`（session-wizard）や `prefix + w` でセッション切り替え。
 
 #### 基本操作
 
