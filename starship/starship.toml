@@ -5,7 +5,7 @@
 add_newline = true
 
 # ref https://github.com/starship/starship/discussions/1107?sort=top#discussioncomment-10214050
-format = """[╭ 🌝 ](bold green)$username$directory$all$battery$line_break$character"""
+format = """[╭ π ](bold green)$username$directory$all$battery$line_break$character"""
 
 [character]
 success_symbol = '[╰─>](bold green)'
@@ -51,7 +51,7 @@ discharging_symbol = "😨"
 
 [time]
 disabled = false
-format = '🕙 [$time]($style) '
+format = '⏳ [$time]($style) '
 time_format = '%m/%d %R'
 
 # [memory_usage]
