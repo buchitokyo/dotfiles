@@ -57,8 +57,16 @@ return {
       popup_border_style = "rounded",
       enable_git_status = true,
       enable_diagnostics = true,
-      enable_normal_mode_for_inputs = false,
       enable_cursor_hijack = true,
+      event_handlers = {
+        {
+          event = "neo_tree_popup_input_ready",
+          handler = function(args)
+            vim.cmd("stopinsert")
+            vim.keymap.set("i", "<esc>", vim.cmd.stopinsert, { noremap = true, buffer = args.bufnr })
+          end,
+        },
+      },
       open_files_do_not_replace_types = { "terminal", "trouble", "qf", "neo-tree" },
       sort_case_insensitive = false,
       source_selector = {
@@ -66,7 +74,7 @@ return {
         sources = {
           { source = "filesystem", display_name = "󱧷 Files" },
           { source = "buffers", display_name = "󰈚 Buffers" },
-          { source = "git_status", display_name = " Git" },
+          { source = "git_status", display_name = "󰊤 Git" },
         },
       },
       default_component_configs = {

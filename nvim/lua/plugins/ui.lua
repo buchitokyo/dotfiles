@@ -108,35 +108,6 @@ return {
     opts = {},
   },
 
-  -- namu (シンボルナビゲーション)
-  {
-    "bassamsdata/namu.nvim",
-    keys = {
-      { "<Leader>ns", "<cmd>Namu symbols<cr>", desc = "Namu symbols" },
-    },
-    opts = {},
-  },
-
-  -- nvim-ufo (折りたたみ強化)
-  {
-    "kevinhwang91/nvim-ufo",
-    dependencies = { "kevinhwang91/promise-async" },
-    event = { "BufReadPre", "BufNewFile" },
-    config = function()
-      vim.o.foldcolumn = "1"
-      vim.o.foldlevel = 99
-      vim.o.foldlevelstart = 99
-      vim.o.foldenable = true
-      require("ufo").setup({
-        provider_selector = function()
-          return { "treesitter", "indent" }
-        end,
-      })
-      vim.keymap.set("n", "zR", require("ufo").openAllFolds, { desc = "Open all folds" })
-      vim.keymap.set("n", "zM", require("ufo").closeAllFolds, { desc = "Close all folds" })
-    end,
-  },
-
   -- vim-doge (ドキュメント生成)
   {
     "kkoomen/vim-doge",
@@ -146,5 +117,14 @@ return {
       vim.g.doge_enable_mappings = 1
       vim.g.doge_doc_standard_python = "google"
     end,
+  },
+
+  -- namu (シンボルナビゲーション)
+  {
+    "bassamsdata/namu.nvim",
+    keys = {
+      { "<Leader>ns", "<cmd>Namu symbols<cr>", desc = "Namu symbols" },
+    },
+    opts = {},
   },
 }
