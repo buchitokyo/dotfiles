@@ -112,6 +112,19 @@ return {
     end,
   },
 
+  -- glance.nvim (定義/参照のプレビュー)
+  {
+    "dnlhc/glance.nvim",
+    cmd = "Glance",
+    keys = {
+      { "gD", "<cmd>Glance definitions<cr>", desc = "Glance definitions" },
+      { "gR", "<cmd>Glance references<cr>", desc = "Glance references" },
+      { "gY", "<cmd>Glance type_definitions<cr>", desc = "Glance type definitions" },
+      { "gI", "<cmd>Glance implementations<cr>", desc = "Glance implementations" },
+    },
+    opts = {},
+  },
+
   -- TypeScript (typescript-tools.nvim - faster than ts_ls)
   {
     "pmizio/typescript-tools.nvim",
