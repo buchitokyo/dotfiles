@@ -67,6 +67,12 @@ autocmd("ColorScheme", {
     vim.api.nvim_set_hl(0, "CursorColumn", { bg = "#2a2a3a" })
     vim.api.nvim_set_hl(0, "Visual", { bg = "#45475a", fg = "#cdd6f4" })
 
+    -- ウィンドウ境界線を見やすく
+    vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#89b4fa", bg = "NONE" })
+
+    -- Neo-tree のカーソル行を見やすく
+    vim.api.nvim_set_hl(0, "NeoTreeCursorLine", { bg = "#45475a" })
+
     -- neo-tree: git ステータスの色を見やすく
     vim.api.nvim_set_hl(0, "NeoTreeGitAdded", { fg = "#9ece6a", bold = true })     -- 追加: 緑
     vim.api.nvim_set_hl(0, "NeoTreeGitModified", { fg = "#e0af68", bold = true })  -- 変更: 黄

@@ -59,6 +59,7 @@ opt.shiftwidth = 2
 opt.softtabstop = 2
 opt.list = true
 opt.listchars = { tab = "▸ ", trail = "·", extends = "»", precedes = "«", lead = "·" }
+opt.fillchars = { vert = "│", horiz = "─", verthoriz = "┼", horizup = "┴", horizdown = "┬", vertleft = "┤", vertright = "├" }
 
 -- ============================================
 -- 検索
