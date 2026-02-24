@@ -5,11 +5,11 @@
 add_newline = true
 
 # ref https://github.com/starship/starship/discussions/1107?sort=top#discussioncomment-10214050
-format = """[╭ π ](bold green)$username$directory$all$battery$line_break$character"""
+format = """[╭   ](bold #FFA500)$username$directory$all$battery$line_break$character"""
 
 [character]
-success_symbol = '[╰─>](bold green)'
-error_symbol = '[╰─>](bold green)'
+success_symbol = '[╰─>](bold #FFA500)'
+error_symbol = '[╰─>](bold #FFA500)'
 
 [status]
 disabled = false
