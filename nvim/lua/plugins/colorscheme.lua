@@ -14,6 +14,7 @@ return {
           treesitter = true,
           notify = true,
           neotree = true,
+          lualine = {},
         },
       })
       vim.cmd.colorscheme("catppuccin")

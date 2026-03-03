@@ -15,6 +15,7 @@ export PATH="/opt/homebrew/opt/php@7.4/sbin:$PATH"
 export PATH="/opt/homebrew/Cellar/mysql@5.7/bin:$PATH"
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 eval "$(/opt/homebrew/bin/brew shellenv)"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"

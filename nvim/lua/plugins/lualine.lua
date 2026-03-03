@@ -3,17 +3,16 @@ return {
   event = "VimEnter",
   dependencies = {
     "nvim-tree/nvim-web-devicons",
-    "rmehri01/onenord.nvim",
     "lewis6991/gitsigns.nvim",
     "SmiteshP/nvim-navic",
   },
   config = function()
-    local colors = require("onenord.colors").load()
+    local C = require("catppuccin.palettes").get_palette()
 
     require("lualine").setup({
       options = {
         icons_enabled = true,
-        theme = "auto",
+        theme = "catppuccin",
         section_separators = { left = "", right = "" },
         component_separators = { left = "", right = "" },
         disabled_filetypes = {
@@ -84,7 +83,7 @@ return {
             colored = true,
             icon_only = false,
             color = {
-              fg = colors.fg,
+              fg = C.text,
             },
           },
           "progress",
