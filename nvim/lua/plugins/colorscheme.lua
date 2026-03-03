@@ -52,6 +52,22 @@ return {
 
             -- デコレータ
             ["@attribute"] = { fg = C.teal, bold = true },
+
+            -- LSP セマンティックトークン（treesitter と同じ色を適用）
+            ["@lsp.type.variable"] = { fg = C.flamingo },
+            ["@lsp.type.variable.python"] = { fg = C.flamingo },
+            ["@lsp.type.parameter"] = { fg = C.maroon },
+            ["@lsp.type.property"] = { fg = C.lavender },
+            ["@lsp.type.function"] = { fg = C.blue, bold = true },
+            ["@lsp.type.method"] = { fg = C.blue },
+            ["@lsp.type.class"] = { fg = C.yellow, bold = true },
+            ["@lsp.type.decorator"] = { fg = C.teal, bold = true },
+            ["@lsp.type.keyword"] = { fg = C.mauve, bold = true },
+            ["@lsp.type.string"] = { fg = C.green },
+            ["@lsp.type.number"] = { fg = C.peach },
+            ["@lsp.type.operator"] = { fg = C.sky },
+            ["@lsp.mod.readonly"] = {},
+            ["@lsp.typemod.variable.readonly"] = { fg = C.peach },
           }
         end,
         integrations = {
