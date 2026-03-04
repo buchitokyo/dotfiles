@@ -76,6 +76,18 @@ return {
       -- Configure servers using vim.lsp.config (Neovim 0.11+)
       vim.lsp.config("basedpyright", {
         capabilities = capabilities,
+        settings = {
+          basedpyright = {
+            analysis = {
+              typeCheckingMode = "standard",
+            },
+          },
+          python = {
+            venvPath = ".",
+            venv = ".venv",
+            pythonVersion = "3.13",
+          },
+        },
       })
 
       vim.lsp.config("lua_ls", {
