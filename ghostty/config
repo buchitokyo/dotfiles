@@ -40,7 +40,7 @@ macos-option-as-alt = true
 # ========================================
 scrollback-limit = 100000
 mouse-hide-while-typing = true
-mouse-scroll-multiplier = 1
+mouse-scroll-multiplier = 0.5
 window-inherit-working-directory = true
 
 # ========================================

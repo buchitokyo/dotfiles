@@ -82,11 +82,6 @@ return {
               typeCheckingMode = "standard",
             },
           },
-          python = {
-            venvPath = ".",
-            venv = ".venv",
-            pythonVersion = "3.13",
-          },
         },
       })
 
