@@ -35,6 +35,8 @@ macos-titlebar-style = tabs
 # macOS: Option キーを Alt として使用
 macos-option-as-alt = true
 
+fullscreen = true
+
 # ========================================
 # パフォーマンス設定
 # ========================================
