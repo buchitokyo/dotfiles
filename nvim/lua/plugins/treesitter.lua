@@ -25,17 +25,9 @@ return {
       end
 
       -- ハイライト + インデント有効化
-      local in_container = vim.fn.filereadable("/.dockerenv") == 1
-        or os.getenv("REMOTE_CONTAINERS") ~= nil
-        or os.getenv("container") ~= nil
       vim.api.nvim_create_autocmd("FileType", {
         callback = function()
-          if in_container then
-            -- Docker: パーサーだけ読み込む（hlchunk用）、ハイライトはvim syntaxに任せる
-            pcall(vim.treesitter.get_parser)
-          else
-            pcall(vim.treesitter.start)
-          end
+          pcall(vim.treesitter.start)
           vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
         end,
       })
