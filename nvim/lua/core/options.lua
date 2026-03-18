@@ -14,6 +14,7 @@ opt.hidden = true
 opt.showcmd = true
 opt.autoindent = true
 opt.smartindent = true
+opt.backspace = "indent,eol,start"
 
 -- undo永続化
 opt.undofile = true

@@ -5,6 +5,7 @@ return {
     "nvim-tree/nvim-web-devicons",
     "lewis6991/gitsigns.nvim",
     "SmiteshP/nvim-navic",
+    "catppuccin/nvim",
   },
   config = function()
     local C = require("catppuccin.palettes").get_palette()
