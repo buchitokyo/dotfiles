@@ -52,8 +52,16 @@ shell-integration = detect
 shell-integration-features = sudo,title
 
 # ========================================
+# コマンド完了通知
+# ========================================
+notify-on-command-finish = unfocused
+
+# ========================================
 # キーバインド
 # ========================================
+# コピー（v1.3でデフォルトがmixedに変更されたため、plainを明示指定）
+keybind = cmd+c=copy_to_clipboard:plain
+
 # 設定リロード
 keybind = cmd+shift+comma=reload_config
 
