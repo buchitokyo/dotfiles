@@ -1,6 +1,6 @@
 #!/bin/bash
 # devcontainerの起動＋ツールセットアップ
-# ccmanager の --devc-up-command や devcontainer-nvim.sh から呼ばれる
+# devcontainer-nvim.sh から呼ばれる
 
 set -e
 
@@ -15,8 +15,11 @@ devcontainer exec --workspace-folder "$WORKSPACE_FOLDER" \
   bash -c "
     # 基本パッケージインストール
     if ! which unzip > /dev/null 2>&1 || ! which gcc > /dev/null 2>&1; then
-      apt-get update && apt-get install -y ripgrep fd-find curl unzip gcc g++ make tmux
+      apt-get update && apt-get install -y ripgrep fd-find curl unzip gcc g++ make tmux jq
     fi
+
+    # herdr（エージェントマルチプレクサ / dev-layout.sh が jq を使う）
+    which herdr > /dev/null 2>&1 || curl -fsSL https://herdr.dev/install.sh | sh
 
     # tree-sitter CLIインストール（nvim-treesitterのパーサーコンパイルに必須）
     which tree-sitter > /dev/null 2>&1 || npm install -g tree-sitter-cli
@@ -70,9 +73,11 @@ devcontainer exec --workspace-folder "$WORKSPACE_FOLDER" \
         cd \"\$HOME/dotfiles\" && bash install.sh
       else
         mkdir -p \"\$HOME/.config\"
-        ln -sf \"\$HOME/dotfiles/.config/nvim\" \"\$HOME/.config/nvim\"
-        ln -sf \"\$HOME/dotfiles/.config/tmux\" \"\$HOME/.config/tmux\"
-        ln -sf \"\$HOME/dotfiles/.config/yazi\" \"\$HOME/.config/yazi\"
+        ln -sf \"\$HOME/dotfiles/nvim\" \"\$HOME/.config/nvim\"
+        ln -sf \"\$HOME/dotfiles/tmux\" \"\$HOME/.config/tmux\"
+        ln -sf \"\$HOME/dotfiles/yazi\" \"\$HOME/.config/yazi\"
+        mkdir -p \"\$HOME/.config/herdr\"
+        ln -sf \"\$HOME/dotfiles/herdr/config.toml\" \"\$HOME/.config/herdr/config.toml\"
       fi
     fi
 
@@ -80,9 +85,6 @@ devcontainer exec --workspace-folder "$WORKSPACE_FOLDER" \
     if [ ! -d \"\$HOME/.local/state/yazi/packages\" ] || [ -z \"\$(ls -A \"\$HOME/.local/state/yazi/packages\" 2>/dev/null)\" ]; then
       ya pkg add yazi-rs/plugins:git
     fi
-
-    # ccmanagerインストール（npm経由）
-    which ccmanager > /dev/null 2>&1 || npm install -g ccmanager
 
     # nvimプラグインインストール＋treesitterパーサーコンパイル
     if [ -f \"\$HOME/dotfiles/scripts/compile-treesitter-parsers.sh\" ] && [ ! -d \"\$HOME/.local/share/nvim/site/parser\" ] || [ -z \"\$(ls -A \"\$HOME/.local/share/nvim/site/parser\" 2>/dev/null)\" ]; then

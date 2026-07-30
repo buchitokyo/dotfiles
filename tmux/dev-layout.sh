@@ -1,6 +1,6 @@
 #!/bin/bash
 # tmux 開発用レイアウト
-# 左上: nvim / 右上: ccmanager / 左下: terminal / 右下: terminal
+# 左上: nvim / 右上: claude / 左下: terminal / 右下: terminal
 
 SESSION="${1:-dev}"
 DIR="${2:-$(pwd)}"
@@ -13,10 +13,10 @@ tmux new-session -d -s "$SESSION" -c "$DIR" -x "$(tput cols)" -y "$(tput lines)"
 NVIM_PANE=$(tmux display-message -t "$SESSION" -p '#{pane_id}')
 tmux send-keys -t "$NVIM_PANE" "nvim ." Enter
 
-# 右上: ccmanager（左を水平分割）
+# 右上: claude（左を水平分割）
 tmux split-window -h -t "$NVIM_PANE" -c "$DIR"
 CC_PANE=$(tmux display-message -t "$SESSION" -p '#{pane_id}')
-tmux send-keys -t "$CC_PANE" "ccmanager" Enter
+tmux send-keys -t "$CC_PANE" "claude" Enter
 
 # 左下: terminal（左上ペインを垂直分割）
 tmux split-window -v -t "$NVIM_PANE" -c "$DIR"

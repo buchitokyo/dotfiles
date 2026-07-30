@@ -62,11 +62,26 @@ alias l="clear && ls"
 alias vim="nvim"
 alias vi="nvim"
 
-# Claude Code（tmux セッションで起動）
-alias cc='tmux new-session -A -s claude "claude"'
+# herdr（エージェントマルチプレクサ）
+alias h='herdr'
+alias hs='herdr session attach'
 
-# 開発用 tmux レイアウト（nvim + claude + terminal x2）
-alias dev='~/.config/tmux/dev-layout.sh'
+# Claude Code 用ワークスペースを herdr 上に作って起動
+alias cc='herdr-claude'
+function herdr-claude() {
+  local dir="${1:-$PWD}"
+  if [ "${HERDR_ENV:-}" = "1" ]; then
+    local pane
+    pane=$(herdr workspace create --cwd "$dir" --label "claude:$(basename "$dir")" \
+      | jq -r '.result.root_pane.pane_id')
+    herdr pane run "$pane" "claude"
+  else
+    claude
+  fi
+}
+
+# 開発用 herdr レイアウト（nvim + claude + shell x2）
+alias dev='~/.config/herdr/dev-layout.sh'
 
 # yazi: ファイルマネージャ (終了時にディレクトリ移動)
 function y() {

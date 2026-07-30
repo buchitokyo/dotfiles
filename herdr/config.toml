@@ -1,0 +1,131 @@
+# ==============================================================================
+# herdr 設定（旧 tmux/tmux.conf の移行先）
+# 反映: herdr server reload-config  または  prefix+Shift+R
+# 検証: herdr config check
+# 既定値の全一覧: herdr --default-config
+# ==============================================================================
+
+onboarding = false
+
+# --- ターミナル ---
+[terminal]
+default_shell = "/bin/zsh"
+shell_mode = "auto"   # macOS でログインシェル起動（Homebrew の PATH 設定が効く）
+new_cwd = "follow"    # tmux の -c "#{pane_current_path}" 相当
+
+# --- 外観（旧 catppuccin/tmux プラグイン） ---
+[theme]
+name = "catppuccin"
+auto_switch = true    # Ghostty の light/dark 追従（ghostty/config の theme 設定と揃える）
+dark_name = "catppuccin"
+light_name = "catppuccin-latte"
+
+[theme.custom]
+accent = "#c8a2d0"    # 旧 pane-active-border-style の色
+
+# --- UI ---
+[ui]
+mouse_capture = true                     # 旧 set -g mouse on
+copy_on_select = true
+pane_borders = true
+show_agent_labels_on_pane_borders = true # どのペインがどのエージェントか境界線に出す
+sidebar_width = 26
+
+[ui.toast]
+delivery = "system"   # エージェントが完了 / 入力待ちになったら macOS 通知
+delay_seconds = 1
+
+[session]
+resume_agents_on_restore = true   # 旧 tmux-resurrect / continuum の代替
+
+[advanced]
+scrollback_limit_bytes = 20000000 # 旧 history-limit 50000 相当（行数ではなくバイト）
+
+# --- 日本語入力（macOS + Claude Code / Codex 等の TUI 対策） ---
+[experimental]
+switch_ascii_input_source_in_prefix = true
+reveal_hidden_cursor_for_cjk_ime = true
+cjk_ime_agents = ["claude", "codex"]
+
+# ==============================================================================
+# キーバインド
+#   prefix+X = prefix を押してから X
+#   ctrl+alt+X = prefix 不要の直接チョード（herdr 公式が最も安全と推奨する修飾子）
+# ==============================================================================
+[keys]
+prefix = "ctrl+a"               # 旧 set -g prefix C-a
+settings = "prefix+shift+s"     # 既定 prefix+s を退避（下で上下分割に使う）
+remote_image_paste = ""         # 既定 ctrl+v は Vim の矩形選択と衝突（--remote 時のみ有効）
+
+# 分割（旧 bind v = 左右 / bind s = 上下）
+split_vertical   = "prefix+v"
+split_horizontal = ["prefix+minus", "prefix+s"]
+
+# ペインフォーカス（prefix あり + prefix なしチョードの両対応）
+# ctrl+h/j/k/l は Neovim の分割移動用に空けてある
+focus_pane_left  = ["prefix+h", "ctrl+alt+h"]
+focus_pane_down  = ["prefix+j", "ctrl+alt+j"]
+focus_pane_up    = ["prefix+k", "ctrl+alt+k"]
+focus_pane_right = ["prefix+l", "ctrl+alt+l"]
+
+# ペイン入れ替え / リサイズ（旧 prefix+H/J/K/L の resize-pane）
+swap_pane_left  = "prefix+shift+h"
+swap_pane_down  = "prefix+shift+j"
+swap_pane_up    = "prefix+shift+k"
+swap_pane_right = "prefix+shift+l"
+resize_mode     = "prefix+r"    # 入ってから h/j/k/l で連続リサイズ
+
+# タブ（= 旧 tmux window）。旧 M-Left / M-Right の代替
+previous_tab = ["prefix+p", "ctrl+alt+["]
+next_tab     = ["prefix+n", "ctrl+alt+]"]
+switch_tab   = "prefix+1..9"
+new_tab      = ["prefix+c", "ctrl+alt+c"]
+
+# ワークスペース（= 旧 tmux session）
+switch_workspace = "prefix+shift+1..9"
+
+# エージェント直行（旧 toggle-claude-pane.sh の代替）
+focus_agent    = "prefix+alt+1..9"
+next_agent     = "prefix+alt+n"
+previous_agent = "prefix+alt+p"
+
+# copy mode（vi 操作は組み込み。旧 bind Escape copy-mode も残す）
+copy_mode = ["prefix+[", "prefix+esc"]
+
+zoom = ["prefix+z", "ctrl+alt+z"]
+
+# --- カスタムコマンド ---
+
+# yazi ポップアップ（旧 bind y display-popup + yazi-popup.sh）
+[[keys.command]]
+key = "prefix+y"
+type = "popup"
+command = "~/.config/herdr/yazi-popup.sh"
+description = "yazi (cd on exit)"
+width = "90%"
+height = "90%"
+
+# lazygit（prefix+g は goto なので prefix+alt+g）
+[[keys.command]]
+key = "prefix+alt+g"
+type = "popup"
+command = "lazygit"
+description = "lazygit"
+width = "90%"
+height = "90%"
+
+# 使い捨てシェル
+[[keys.command]]
+key = "prefix+t"
+type = "popup"
+command = "exec \"${SHELL:-sh}\""
+description = "scratch shell"
+width = "80%"
+height = "80%"
+
+# 開発レイアウト一括起動（旧 dev-layout.sh）
+[[keys.command]]
+key = "prefix+shift+e"
+type = "shell"
+command = "~/.config/herdr/dev-layout.sh"
+description = "dev layout (nvim + claude + 2 shells)"

@@ -20,12 +20,21 @@ done
 mkdir -p ~/.config
 
 # ディレクトリごとリンク
+# NOTE: tmux は herdr への移行期間中のみ残している（移行完了後に削除する）
 for dir in nvim tmux ghostty sheldon; do
     [ -d "$dir" ] && ln -snfv ${PWD}/"$dir" ~/.config/"$dir"
 done
 
 # 単体ファイル
-[ -f "starship.toml" ] && ln -snfv ${PWD}/starship.toml ~/.config/starship.toml
+[ -f "starship/starship.toml" ] && ln -snfv ${PWD}/starship/starship.toml ~/.config/starship.toml
+
+# herdr（ログ・ソケット・session.json を同じディレクトリに書き込むためファイル単位でリンク）
+if [ -d "herdr" ]; then
+    mkdir -p ~/.config/herdr
+    for f in herdr/*; do
+        ln -snfv ${PWD}/"$f" ~/.config/herdr/
+    done
+fi
 
 # Yazi（plugins/package.toml は ya pkg が管理するためファイル単位でリンク）
 if [ -d "yazi" ]; then
@@ -44,7 +53,14 @@ if [ -d "claude" ]; then
     ln -snfv ${PWD}/claude/settings.json ~/.claude/settings.json
 fi
 
+# herdr: Claude Code 連携フック（~/.claude/hooks/herdr-agent-state.sh を生成し、
+# settings.json に SessionStart フックを追記する）
+if command -v herdr >/dev/null 2>&1; then
+    herdr integration install claude
+fi
+
 # tmux プラグインマネージャ（tpm）
+# NOTE: herdr への移行期間中のみ残している（移行完了後に削除する）
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
     echo "Installing tpm (tmux plugin manager)..."
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm

@@ -31,7 +31,7 @@ git clone git@github.com:buchitokyo/dotfiles.git ~/dotfiles
 ### 4. 必要なツールをインストール
 
 ```zsh
-brew install sheldon starship eza neovim lazygit tmux \
+brew install sheldon starship eza neovim lazygit herdr tmux \
   yazi ffmpeg sevenzip jq poppler fd ripgrep fzf zoxide imagemagick \
   font-symbols-only-nerd-font tree-sitter tree-sitter-cli \
   nodenv node-build
@@ -46,7 +46,8 @@ brew install sheldon starship eza neovim lazygit tmux \
 | [Neovim](https://neovim.io/) | モダンな Vim（LSP対応） |
 | [lazygit](https://github.com/jesseduffield/lazygit) | ターミナル用 Git UI |
 | [yazi](https://yazi-rs.github.io/) | ターミナル用ファイルマネージャ（Rust製、高速） |
-| [tmux](https://github.com/tmux/tmux) | ターミナルマルチプレクサ（セッション管理・画面分割） |
+| [herdr](https://herdr.dev/) | エージェントマルチプレクサ（セッション管理・画面分割 + エージェント状態表示） |
+| [tmux](https://github.com/tmux/tmux) | ターミナルマルチプレクサ（herdr への移行期間中のみ） |
 | [Ghostty](https://ghostty.org/) | モダンなターミナル（Rust製、GPU加速） |
 | [tree-sitter](https://tree-sitter.github.io/) | パーサーライブラリ + CLI（Neovim の treesitter パーサーコンパイルに必要） |
 
@@ -97,14 +98,13 @@ nodenv global 22.17.0
 グローバル npm パッケージをインストール：
 
 ```zsh
-npm install -g @anthropic-ai/claude-code ccmanager
+npm install -g @anthropic-ai/claude-code
 ```
 
 | ツール | 用途 |
 |--------|------|
 | [nodenv](https://github.com/nodenv/nodenv) | Node.js バージョン管理 |
 | [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | AI コーディングアシスタント（CLI） |
-| [ccmanager](https://github.com/jasonjmcghee/ccmanager) | Claude Code の並行セッション管理（`npx ccmanager` で利用） |
 
 ### 7. dotfiles をインストール
 
@@ -130,8 +130,13 @@ dotfiles/
 │       ├── core/               # 基本設定・キーマップ
 │       ├── config/             # lazy.nvim 設定
 │       └── plugins/            # プラグイン設定（プラグインごとに分割）
-├── tmux/                       # tmux（~/.config/tmux）
+├── herdr/                      # herdr（~/.config/herdr、ファイル単位でリンク）
+│   ├── config.toml
+│   ├── dev-layout.sh           # 開発用 4 ペインレイアウト
+│   └── yazi-popup.sh           # yazi ポップアップ
+├── tmux/                       # tmux（~/.config/tmux、移行期間中のみ）
 │   ├── tmux.conf
+│   ├── dev-layout.sh
 │   ├── toggle-claude-pane.sh   # Claude Code ペイントグル
 │   └── yazi-popup.sh           # yazi ポップアップ
 ├── ghostty/                    # Ghostty（~/.config/ghostty）
@@ -141,7 +146,8 @@ dotfiles/
 ├── yazi/                       # yazi ファイルマネージャ（~/.config/yazi）
 │   ├── init.lua
 │   └── yazi.toml
-├── starship.toml               # プロンプト（~/.config/starship.toml）
+├── starship/                   # プロンプト
+│   └── starship.toml           # → ~/.config/starship.toml にリンク
 ├── claude/                     # Claude Code（~/.claude）
 │   └── settings.json
 ├── .zshrc                      # zsh 設定（~/）
@@ -315,7 +321,9 @@ Git リポジトリ内のファイル/ディレクトリに Git ステータス�
 #### ナビゲーション連携
 | プラグイン | 用途 | キー |
 |-----------|------|------|
-| [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) | Neovim スプリット ↔ tmux ペイン間のシームレス移動 | `Ctrl+h/j/k/l` |
+| [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) | Neovim スプリット ↔ tmux ペイン間のシームレス移動（herdr 内では無効） | `Ctrl+h/j/k/l` |
+
+herdr 内（`HERDR_ENV=1`）では vim-tmux-navigator を読み込まず、`Ctrl+h/j/k/l` は Neovim の分割移動のみに使う。herdr ペイン間の移動は `Ctrl+Alt+h/j/k/l` または `prefix+h/j/k/l`。
 
 #### Git
 | プラグイン | 用途 | キー |
@@ -345,7 +353,7 @@ Git リポジトリ内のファイル/ディレクトリに Git ステータス�
 | `数字G` / `:数字` | 指定行にジャンプ（例: `42G`、`:42`） |
 | `Esc Esc` | 検索ハイライト解除 |
 | `Space a` | 全選択 |
-| `Ctrl+h/j/k/l` | ウィンドウ/tmux ペイン移動（vim-tmux-navigator） |
+| `Ctrl+h/j/k/l` | ウィンドウ移動（herdr 内は Neovim 分割のみ / tmux 内は vim-tmux-navigator） |
 | `Space d` | バッファ削除 |
 | `Space t` | 新規タブ |
 | `Space cd` | 現在のファイルのディレクトリに移動 |
@@ -406,7 +414,14 @@ Git リポジトリ内のファイル/ディレクトリに Git ステータス�
 
 #### Cmd キーパススルー（Neovim 連携）
 
-Ghostty → tmux → Neovim の経路で Cmd キーを転送。Neovim 内で IDE 風のショートカットが使える。
+Ghostty → マルチプレクサ → Neovim の経路で Cmd キーを転送。Neovim 内で IDE 風のショートカットが使える。
+
+Ghostty は `keybind = cmd+s=csi:115;9~` の形でシーケンスを送る（`ghostty/config`）。
+
+- **tmux** — `tmux.conf` の `user-keys` + `bind-key -n User*`（28行）で `\e[...~` を `\e[...u`（CSI u 形式）に変換して Neovim に渡す必要がある。この変換がないと Neovim は認識しない。
+- **herdr** — 中継設定は不要。herdr が入力を Super 修飾キーとして解釈し、kitty keyboard protocol を有効にしたペイン（Neovim 等）へ CSI u 形式で再エンコードして渡す。
+
+ただしシェルのペインは kitty keyboard protocol を有効にしないため、herdr は Super 修飾を落として素のキーを渡す。zsh で `Cmd+S` を押すと `s` が入力される（tmux では `.zshrc` の `bindkey -s` で吸収していた）。
 
 | キー | Neovim での動作 |
 |------|------|
@@ -422,122 +437,153 @@ Ghostty → tmux → Neovim の経路で Cmd キーを転送。Neovim 内で IDE
 | `Cmd+Shift+J` | 割り当て可能 |
 | `` Cmd+` `` | 割り当て可能 |
 
-### tmux（ターミナルマルチプレクサ）
+### herdr（エージェントマルチプレクサ）
 
-セッション管理・ペイン分割でターミナル作業を効率化。Prefix は `Ctrl+a`。
+tmux の後継。セッション管理・ペイン分割に加えて、各ペインで動く AI エージェントの状態（idle / working / blocked / done）をサイドバーに表示する。Prefix は `Ctrl+a`。
+
+階層は **Workspace > Tab > Pane**（tmux の Session > Window > Pane に対応）。
+
+```zsh
+herdr                       # 起動 / 既存セッションにアタッチ
+herdr --session work        # 名前付きセッション
+herdr --remote you@server   # SSH 越しにリモートの herdr へアタッチ
+herdr config check          # config.toml の検証
+herdr server reload-config  # 設定リロード（prefix+Shift+R でも可）
+```
 
 #### 開発用レイアウト（`dev` コマンド）
 
-4ペイン構成で開発環境を一発起動。tmux-resurrect でセッション保存・復元も可能。
+4ペイン構成で開発環境を一発起動（`herdr/dev-layout.sh`）。`jq` が必要。
 
 ```
 ┌──────────────┬──────────────┐
 │              │              │
-│    nvim      │  ccmanager   │
+│    nvim      │    claude    │
 │   (60%)      │   (40%)      │
 │              │              │
 ├──────────────┼──────────────┤
-│   terminal   │   terminal   │
+│    shell     │    shell     │
 │   (30%)      │   (30%)      │
 └──────────────┴──────────────┘
 ```
 
 | コマンド | 機能 |
 |---------|------|
-| `dev` | カレントディレクトリで起動（セッション名: dev） |
-| `dev myproject` | セッション名を指定して起動 |
-| `dev myproject ~/code/proj` | セッション名 + ディレクトリ指定 |
-| `prefix + Ctrl+s` | レイアウトを保存（tmux-resurrect） |
-| `prefix + Ctrl+r` | レイアウトを復元（tmux-resurrect） |
-| `prefix + :` → `kill-session` | 現在のセッションを終了 |
-| `tmux kill-session -t dev` | 指定セッションを終了（外部から） |
-| `tmux kill-server` | tmux 全体を終了 |
+| `dev` | カレントディレクトリで起動（Workspace 名 = ディレクトリ名） |
+| `dev ~/code/proj` | ディレクトリ指定 |
+| `dev ~/code/proj myname` | ディレクトリ + Workspace 名指定 |
+| `prefix + Shift+E` | herdr 内から現在のディレクトリでレイアウト起動 |
 
-複数プロジェクトを並行する場合はセッション名を変えて起動：
-
-```zsh
-dev project-a ~/code/project-a
-dev project-b ~/code/project-b
-```
-
-`prefix + T`（session-wizard）や `prefix + w` でセッション切り替え。
+同名 Workspace が既にあればフォーカスするだけ（tmux の `has-session` 相当）。複数プロジェクトは Workspace 名を変えて並行起動し、`prefix + w` または `prefix + Shift+1..9` で切り替える。
 
 #### 基本操作
 
 | キー | 機能 |
 |------|------|
 | `prefix + v` | 左右にペイン分割 |
-| `prefix + s` | 上下にペイン分割 |
-| `prefix + c` | 新規ウィンドウ |
+| `prefix + s` / `prefix + -` | 上下にペイン分割 |
+| `prefix + c` | 新規タブ |
 | `prefix + x` | ペインを閉じる |
-| `prefix + &` | ウィンドウを閉じる |
-| `prefix + H/J/K/L` | ペインリサイズ（左/下/上/右） |
-| `Alt+←` / `Alt+→` | ペイン移動（端でウィンドウ跨ぎ） |
-| `Alt+c` | Claude Code ペインにトグル |
-| `prefix + y` | yazi ポップアップ（ディレクトリ同期） |
-| `prefix + Escape` | コピーモード（vi キーバインド） |
-| `v` (コピーモード) | 選択開始 |
-| `y` (コピーモード) | コピー（pbcopy） |
+| `prefix + Shift+X` | タブを閉じる |
+| `prefix + h/j/k/l` | ペイン移動 |
+| `Ctrl+Alt+h/j/k/l` | ペイン移動（prefix なし） |
+| `prefix + Shift+H/J/K/L` | ペイン入れ替え |
+| `prefix + r` | リサイズモード（入ってから `h/j/k/l`） |
+| `prefix + z` | ペインをズーム |
+| `prefix + n` / `p` | 次 / 前のタブ |
+| `prefix + 1..9` | タブ番号で切り替え |
+| `prefix + b` | サイドバー表示切替 |
+| `prefix + q` | デタッチ（プロセスは動き続ける） |
+| `prefix + ?` | 有効なキーバインド一覧 |
 
-#### セッション管理（ターミナルから実行）
-
-| コマンド | 機能 |
-|---------|------|
-| `tmux` | 新規セッション起動 |
-| `tmux new -s 名前` | 名前付きセッション作成 |
-| `tmux ls` | セッション一覧 |
-| `tmux a` | 最後のセッションに復帰 |
-| `tmux a -t 名前` | 指定セッションに復帰 |
-| `tmux kill-session -t 名前` | セッション削除 |
-| `tmux switch -t 名前or番号` | セッション切り替え（tmux 内から） |
-
-#### セッション操作（tmux 内）
+#### エージェント操作
 
 | キー | 機能 |
 |------|------|
-| `prefix + d` | セッションからデタッチ（抜ける） |
-| `prefix + $` | セッション名を変更 |
-| `prefix + w` | セッション/ウィンドウ一覧（プレビュー付き） |
-| `prefix + (` / `)` | 前/次のセッションに切り替え |
+| `prefix + Alt+1..9` | エージェントペインに直行 |
+| `prefix + Alt+n` / `Alt+p` | 次 / 前のエージェント |
+| `prefix + o` | 通知元のペインを開く |
 
-#### fzf 連携
+サイドバーの状態アイコン: 🔴 blocked（承認・入力待ち）/ 🟡 working / 🔵 done（未確認）/ 🟢 idle / ⚪ エージェント以外。
+
+`herdr integration install claude` で Claude Code 連携フックを導入する（`install.sh` が自動実行）。これにより `~/.claude/hooks/herdr-agent-state.sh` が生成され、`claude/settings.json` に `SessionStart` フックが追記される。サーバ再起動後は `claude --resume` でセッションが自動復帰する。
+
+#### Workspace 管理
 
 | キー | 機能 |
 |------|------|
-| `prefix + F` | tmux-fzf 起動（セッション/ウィンドウ等を操作） |
-| `prefix + W` | ウィンドウ選択（fzf） |
-| `prefix + P` | ペイン選択（fzf） |
+| `prefix + w` | Workspace ピッカー |
+| `prefix + g` | Goto ピッカー（Workspace / Tab / Pane を横断） |
+| `prefix + Shift+N` | 新規 Workspace |
+| `prefix + Shift+W` | Workspace 名変更 |
+| `prefix + Shift+D` | Workspace を閉じる |
+| `prefix + Shift+G` | git worktree を新規 Workspace として開く |
 
-#### プラグイン
+#### コピーモード
 
-| プラグイン | 起動キー | 機能 |
-|-----------|---------|------|
-| [tpm](https://github.com/tmux-plugins/tpm) | `prefix + I` | プラグインインストール |
-| [tmux-fzf](https://github.com/sainnhe/tmux-fzf) | `prefix + F` | fzf で tmux 操作 |
-| [tmux-thumbs](https://github.com/fcsonline/tmux-thumbs) | `prefix + Space` | 画面上のテキストをクイックコピー |
-| [tmux-session-wizard](https://github.com/27medkamal/tmux-session-wizard) | `prefix + T` | セッション作成・切り替え（fzf） |
-| [extrakto](https://github.com/laktak/extrakto) | `prefix + Tab` | 画面上のテキストを抽出・挿入 |
-| [tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect) | `prefix + Ctrl-s/r` | セッション保存・復元 |
-| [tmux-continuum](https://github.com/tmux-plugins/tmux-continuum) | 自動 | セッション自動保存 |
+`prefix + [` または `prefix + Escape` で開始。vi キーバインドは**組み込み**（tmux のような個別設定は不要かつ不可）。
+
+| キー | 機能 |
+|------|------|
+| `h/j/k/l`・`w/b/e`・`{`/`}` | 移動 |
+| `Ctrl+b` / `Ctrl+f` | ページ単位で移動 |
+| `/` / `?` → `n` / `N` | 検索 / 次・前へ |
+| `v` / `Space` | 選択開始 |
+| `y` / `Enter` | コピー |
+| `q` / `Esc` | コピーせず離脱 |
+
+Prefix を `Ctrl+a` にしているため、コピーモード内で `Ctrl+b`（ページアップ）が使える。マウスドラッグはコピーモードに入らずそのままコピーされる（`copy_on_select`）。
+
+#### ポップアップ
+
+| キー | 機能 |
+|------|------|
+| `prefix + y` | yazi（終了時に元ペインを `cd`） |
+| `prefix + Alt+g` | lazygit |
+| `prefix + t` | 使い捨てシェル |
+
+#### CLI / ソケット API
+
+エージェント自身がマルチプレクサを操作できる。tmux の `send-keys` 相当に加えて待機処理がある。出力は JSON。
+
+```zsh
+herdr pane list                                   # ペイン一覧
+herdr pane split w1:p1 --direction right --ratio 0.6
+herdr pane run w1:p2 "npm run dev"
+herdr pane read w1:p2                             # ペインの出力を読む
+herdr pane wait-output w1:p2 --match "ready on port 3000"
+herdr agent status --wait --until done
+```
+
+#### セッションの永続化
+
+| ケース | プロセス継続 | レイアウト復元 |
+|--------|------------|--------------|
+| デタッチ → 再アタッチ | ○ | ○ |
+| サーバ再起動 | ✗ | ○（cwd 込み。エージェントは `--resume` で復帰） |
+
+tmux-resurrect / continuum のような追加プラグインは不要。ペインの画面内容まで復元したい場合は `[experimental] pane_history = true`（出力に秘密情報が残る点に注意）。
+
+#### tmux から移行しなかったもの
+
+| tmux | 状況 |
+|------|------|
+| ステータスバーの cpu / battery / uptime | **代替なし**。サイドバーがエージェント状態と git ブランチを表示する |
+| `prefix + V` / `prefix + S`（分割して手前に挿入） | 方向指定のみのため非対応 |
+| copy-mode のキー個別再定義 | vi 操作は組み込みだがカスタム不可 |
+| tmux-fzf / thumbs / session-wizard / extrakto | 公式マーケットプレイスのプラグインで代替可（未導入） |
+
+プラグインは `herdr plugin install owner/repo` で導入する（`--yes` で非対話）。一覧は https://herdr.dev/plugins/ 。レビュー機構はないため、導入前に中身を確認する。
 
 #### セットアップ
 
 ```zsh
-# install.sh が tpm を自動クローン
-./install.sh
-
-# tmux 起動後、プラグインをインストール
-tmux
-# prefix + I（Ctrl+b → Shift+i）
+brew install herdr
+./install.sh   # config.toml / スクリプトをリンクし、Claude Code 連携を導入
+herdr
 ```
 
-#### CCStatusBar（Claude Code セッションモニター）
-
-1. [Releases](https://github.com/usedhonda/cc-status-bar/releases) から CCStatusBar.dmg をダウンロード
-2. DMG を開き、CCStatusBar.app を Applications にドラッグ
-3. Applications から起動
-4. アクセシビリティ権限を許可
-5. セットアップウィザードに従う
+ライセンスは AGPL-3.0 と商用のデュアル。個人利用は問題ないが、外部へのサービス提供に組み込む場合は商用ライセンスを確認する。
 
 ### gvim（GUI版vim、オプション）
 
