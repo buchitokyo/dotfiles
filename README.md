@@ -416,10 +416,11 @@ herdr 内（`HERDR_ENV=1`）では vim-tmux-navigator を読み込まず、`Ctrl
 
 Ghostty → マルチプレクサ → Neovim の経路で Cmd キーを転送。Neovim 内で IDE 風のショートカットが使える。
 
-Ghostty は `keybind = cmd+s=csi:115;9~` の形でシーケンスを送る（`ghostty/config`）。
+Ghostty は `keybind = cmd+s=csi:115;9u` の形で **CSI u 形式**（`\e[<codepoint>;<mod>u`、mod 9 = super / 10 = super+shift）を送る（`ghostty/config`）。
 
-- **tmux** — `tmux.conf` の `user-keys` + `bind-key -n User*`（28行）で `\e[...~` を `\e[...u`（CSI u 形式）に変換して Neovim に渡す必要がある。この変換がないと Neovim は認識しない。
-- **herdr** — 中継設定は不要。herdr が入力を Super 修飾キーとして解釈し、kitty keyboard protocol を有効にしたペイン（Neovim 等）へ CSI u 形式で再エンコードして渡す。
+- **herdr** — 中継設定は不要。herdr は起動時に `\e[>7u` で kitty keyboard protocol を要求し、受け取ったキーを Super 修飾として解釈、kitty keyboard protocol を有効にしたペイン（Neovim 等）へ CSI u 形式で再エンコードして渡す。
+  - ⚠️ herdr が解釈するのは **CSI u 形式のみ**。旧設定の `csi:115;9~`（`\e[...~`）は黙って破棄され、Neovim には何も届かない。Cmd キーが全滅したらまずここを疑う。
+- **tmux** — CSI u をそのまま渡さないため、`tmux.conf` の `user-keys` + `bind-key -n User*`（28行）による変換が必要。ただし現在の `tmux/tmux.conf` は Ghostty が `\e[...~` を送る前提のままなので、tmux に戻す場合は `user-keys` の文字列を `u` 形式に合わせること。
 
 ただしシェルのペインは kitty keyboard protocol を有効にしないため、herdr は Super 修飾を落として素のキーを渡す。zsh で `Cmd+S` を押すと `s` が入力される（tmux では `.zshrc` の `bindkey -s` で吸収していた）。
 

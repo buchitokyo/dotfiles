@@ -84,18 +84,19 @@ keybind = cmd+down=jump_to_prompt:1
 keybind = shift+enter=text:\n
 
 # ========================================
-# Cmd キーを Neovim に転送（エスケープシーケンス経由）
+# Cmd キーを Neovim に転送（CSI u 形式 / 修飾子 9 = super、10 = super+shift）
 # ※ cmd+c / cmd+v はGhosttyの標準コピペを維持するため除外
+# ※ 末尾は必ず `u`。`~` 形式（旧 tmux user-keys 前提）は herdr が破棄する
 # ========================================
-keybind = cmd+s=csi:115;9~
-keybind = cmd+z=csi:122;9~
-keybind = cmd+y=csi:121;9~
-keybind = cmd+a=csi:97;9~
-keybind = cmd+slash=csi:47;9~
-keybind = cmd+p=csi:112;9~
-keybind = cmd+b=csi:98;9~
-keybind = cmd+j=csi:106;9~
-keybind = cmd+grave_accent=csi:96;9~
-keybind = cmd+shift+f=csi:70;10~
-keybind = cmd+shift+p=csi:80;10~
-keybind = cmd+shift+j=csi:74;10~
+keybind = cmd+s=csi:115;9u
+keybind = cmd+z=csi:122;9u
+keybind = cmd+y=csi:121;9u
+keybind = cmd+a=csi:97;9u
+keybind = cmd+slash=csi:47;9u
+keybind = cmd+p=csi:112;9u
+keybind = cmd+b=csi:98;9u
+keybind = cmd+j=csi:106;9u
+keybind = cmd+grave_accent=csi:96;9u
+keybind = cmd+shift+f=csi:70;10u
+keybind = cmd+shift+p=csi:80;10u
+keybind = cmd+shift+j=csi:74;10u
