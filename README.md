@@ -477,6 +477,10 @@ herdr server reload-config  # 設定リロード（prefix+Shift+R でも可）
 
 同名 Workspace が既にあればフォーカスするだけ（tmux の `has-session` 相当）。複数プロジェクトは Workspace 名を変えて並行起動し、`prefix + w` または `prefix + Shift+1..9` で切り替える。
 
+**herdr の中から新しい Workspace を開く場合**も、任意のペインで `dev [DIR] [LABEL]` を叩けばよい。`HERDR_ENV=1` を見て最後の `exec herdr`（アタッチ）をスキップするので、現在のクライアントのまま新 Workspace に切り替わり、herdr が入れ子にならない。herdr の外から実行した場合はレイアウトを組んでからアタッチする。
+
+レイアウト不要で claude だけの Workspace が欲しいときは `cc [DIR]`（`.zshrc`）。
+
 #### 基本操作
 
 | キー | 機能 |
