@@ -55,6 +55,14 @@ keymap("n", "L", "$", opts)
 keymap("v", "H", "^", opts)
 keymap("v", "L", "$", opts)
 
+-- Option+j/k で行を上下に入れ替え
+keymap("n", "<M-j>", ":m .+1<CR>==", opts)
+keymap("n", "<M-k>", ":m .-2<CR>==", opts)
+keymap("i", "<M-j>", "<Esc>:m .+1<CR>==gi", opts)
+keymap("i", "<M-k>", "<Esc>:m .-2<CR>==gi", opts)
+keymap("v", "<M-j>", ":m '>+1<CR>gv=gv", opts)
+keymap("v", "<M-k>", ":m '<-2<CR>gv=gv", opts)
+
 -- ============================================
 -- ウィンドウ操作
 --   herdr 内: Ctrl+h/j/k/l = Neovim の分割移動
