@@ -56,9 +56,9 @@
       "Read(**/id_rsa)",
       "Read(**/id_ed25519)",
       "Read(**/*.pem)",
-      "Write(.env)",
-      "Write(.env.*)",
-      "Write(**/secrets/**)"
+      "Edit(.env)",
+      "Edit(.env.*)",
+      "Edit(**/secrets/**)"
     ]
   },
   "skipDangerousModePermissionPrompt": true,
