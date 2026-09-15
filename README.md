@@ -34,7 +34,7 @@ git clone git@github.com:buchitokyo/dotfiles.git ~/dotfiles
 brew install sheldon starship eza neovim lazygit herdr tmux \
   yazi ffmpeg sevenzip jq poppler fd ripgrep fzf zoxide imagemagick \
   font-symbols-only-nerd-font tree-sitter tree-sitter-cli \
-  nodenv node-build
+  nodenv node-build awscli aws-vault
 ```
 
 | ツール | 用途 |
@@ -50,6 +50,8 @@ brew install sheldon starship eza neovim lazygit herdr tmux \
 | [tmux](https://github.com/tmux/tmux) | ターミナルマルチプレクサ（herdr への移行期間中のみ） |
 | [Ghostty](https://ghostty.org/) | モダンなターミナル（Rust製、GPU加速） |
 | [tree-sitter](https://tree-sitter.github.io/) | パーサーライブラリ + CLI（Neovim の treesitter パーサーコンパイルに必要） |
+| [AWS CLI](https://docs.aws.amazon.com/cli/) | AWS 操作 CLI（v2） |
+| [aws-vault](https://github.com/99designs/aws-vault) | AWS 認証情報を macOS キーチェーンで管理 |
 
 #### yazi 依存ツール
 
@@ -113,6 +115,13 @@ cd ~/dotfiles
 chmod +x install.sh
 ./install.sh
 ```
+
+設定ファイルのシンボリックリンクに加えて、以下も自動で行う。
+
+| 処理 | 条件 |
+|------|------|
+| herdr の Claude Code 連携フック導入 | `herdr` がインストール済みのとき |
+| tpm（tmux プラグインマネージャ）の clone | `~/.tmux/plugins/tpm` が無いとき |
 
 ### 8. シェルを再起動
 
@@ -252,6 +261,51 @@ Git リポジトリ内のファイル/ディレクトリに Git ステータス�
 | `Ctrl+r` | コマンド履歴を検索（fzf デフォルト） |
 | `Alt+c` | ディレクトリを検索してcd |
 | `**<Tab>` | パス補完（例: `vim **<Tab>`） |
+
+### AWS CLI
+
+`brew install awscli aws-vault` で導入する（→ `/opt/homebrew/bin/aws`）。
+
+認証情報（`~/.aws/config` / `~/.aws/credentials`）は**このリポジトリで管理しない**。
+秘密情報のため新しい Mac では手動で配置する。
+
+```zsh
+aws configure --profile <プロファイル名>    # アクセスキーを対話的に設定
+aws sts get-caller-identity                  # ログインできているか確認
+aws s3 ls --profile <プロファイル名>
+```
+
+デフォルトのプロファイルを固定したい場合は環境変数を使う。
+
+```zsh
+export AWS_PROFILE=<プロファイル名>
+```
+
+#### MFA + ロール assume
+
+`~/.aws/config` に `role_arn` + `source_profile` + `mfa_serial` を書いたプロファイルは、
+使うときに自動で MFA コードを聞かれる。取得したセッションは `~/.aws/cli/cache/` に
+キャッシュされ、期限切れまで再入力不要。
+
+```zsh
+aws sts get-caller-identity --profile <ロール用プロファイル>
+# Enter MFA code for arn:aws:iam::...:mfa/...:
+```
+
+`source_profile` に指定したプロファイルのアクセスキーが `~/.aws/credentials` に
+無いと `The source profile "..." must have credentials.` で失敗する。
+
+#### aws-vault
+
+アクセスキーを平文の `~/.aws/credentials` ではなく **macOS キーチェーン**に保存し、
+一時クレデンシャルだけを子プロセスに渡す。MFA / assume role にも対応。
+
+```zsh
+aws-vault add <プロファイル名>              # キーチェーンに登録（credentials から移行）
+aws-vault list                               # 登録済みプロファイル
+aws-vault exec <プロファイル名> -- aws s3 ls  # 一時クレデンシャルでコマンド実行
+aws-vault login <プロファイル名>             # ブラウザでマネジメントコンソールを開く
+```
 
 ### zoxide（スマートcd）
 
@@ -661,6 +715,26 @@ brew install sheldon starship neovim
 rm ~/.cache/sheldon.zsh
 exec zsh
 ```
+
+### `command not found: claude`（頻発）
+
+npm のグローバルインストールが中断されると `@anthropic-ai/` 配下に
+`.claude-code-XXXXXXXX` という一時ディレクトリが残り、`claude` が消える。
+残骸ごと消して入れ直し、nodenv の shim を張り直す。
+
+```zsh
+cd ~/.nodenv/versions/22.17.0/lib/node_modules/@anthropic-ai/
+rm -rf .claude-code-* claude-code
+ls -la .                                  # 残骸が消えたか確認
+
+npm install -g @anthropic-ai/claude-code
+nodenv rehash                             # shim 再生成
+rehash                                    # zsh のコマンドハッシュ更新
+claude --version
+```
+
+`nodenv rehash` を忘れると `~/.nodenv/shims/claude` が作られず、
+再インストールしても `command not found` のままになる。
 
 ### 起動が遅い場合
 
