@@ -736,6 +736,26 @@ claude --version
 `nodenv rehash` を忘れると `~/.nodenv/shims/claude` が作られず、
 再インストールしても `command not found` のままになる。
 
+### `command not found: claude`（頻発）
+
+npm のグローバルインストールが中断されると `@anthropic-ai/` 配下に
+`.claude-code-XXXXXXXX` という一時ディレクトリが残り、`claude` が消える。
+残骸ごと消して入れ直し、nodenv の shim を張り直す。
+
+```zsh
+cd ~/.nodenv/versions/22.17.0/lib/node_modules/@anthropic-ai/
+rm -rf .claude-code-* claude-code
+ls -la .                                  # 残骸が消えたか確認
+
+npm install -g @anthropic-ai/claude-code
+nodenv rehash                             # shim 再生成
+rehash                                    # zsh のコマンドハッシュ更新
+claude --version
+```
+
+`nodenv rehash` を忘れると `~/.nodenv/shims/claude` が作られず、
+再インストールしても `command not found` のままになる。
+
 ### 起動が遅い場合
 
 起動時間を計測：
