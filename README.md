@@ -158,7 +158,9 @@ dotfiles/
 ├── starship/                   # プロンプト
 │   └── starship.toml           # → ~/.config/starship.toml にリンク
 ├── claude/                     # Claude Code（~/.claude）
-│   └── settings.json
+│   ├── settings.json
+│   └── hooks/                  # フック（~/.claude/hooks、ファイル単位でリンク）
+│       └── herdr-tab-title.sh  # プロンプト先頭を herdr のタブ名に反映
 ├── .zshrc                      # zsh 設定（~/）
 ├── .vimrc                      # vim 設定（~/）
 ├── .gvimrc                     # gvim 設定（~/）
@@ -567,6 +569,36 @@ herdr server reload-config  # 設定リロード（prefix+Shift+R でも可）
 
 `herdr integration install claude` で Claude Code 連携フックを導入する（`install.sh` が自動実行）。これにより `~/.claude/hooks/herdr-agent-state.sh` が生成され、`claude/settings.json` に `SessionStart` フックが追記される。サーバ再起動後は `claude --resume` でセッションが自動復帰する。
 
+#### タブ名の自動更新（並列開発向け）
+
+複数の Workspace で claude を同時に走らせると、タブ名が `1` `2` のままで
+どれが何の作業か分からなくなる。`claude/hooks/herdr-tab-title.sh` が
+`UserPromptSubmit` フックとして動き、送信したプロンプトの先頭 20 文字を
+タブ名に反映する。
+
+`install.sh` が `~/.claude/hooks/` にリンクし、`claude/settings.json` の
+`UserPromptSubmit` に登録済み。仕組みは次の通り。
+
+1. herdr の中でのみ動く（`HERDR_ENV` と `HERDR_PANE_ID` で判定）
+2. `herdr pane get $HERDR_PANE_ID` で自分の `tab_id` を引く
+3. `herdr tab rename <tab_id> "<先頭20文字>"` で更新
+
+`UserPromptSubmit` の stdout はモデルのコンテキストに注入されるため、
+このスクリプトは標準出力へ一切書かない。サブエージェントのプロンプト
+（`agent_id` あり）ではタブ名を書き換えない。
+
+制約: タブ名はタブ単位なので、**1 つのタブに claude ペインが 2 つ以上あると
+互いに上書きし合う**。1 タブ 1 エージェントで使う想定。
+
+`herdr integration install claude` は `herdr-agent-state.sh` を上書きするが、
+このスクリプトは別ファイルなので影響を受けない。ただし `settings.json` を
+書き換えるため、`install.sh` 実行後に `UserPromptSubmit` が残っているか
+確認するとよい。
+
+```zsh
+jq '.hooks.UserPromptSubmit' ~/.claude/settings.json
+```
+
 #### Workspace 管理
 
 | キー | 機能 |
@@ -715,26 +747,6 @@ brew install sheldon starship neovim
 rm ~/.cache/sheldon.zsh
 exec zsh
 ```
-
-### `command not found: claude`（頻発）
-
-npm のグローバルインストールが中断されると `@anthropic-ai/` 配下に
-`.claude-code-XXXXXXXX` という一時ディレクトリが残り、`claude` が消える。
-残骸ごと消して入れ直し、nodenv の shim を張り直す。
-
-```zsh
-cd ~/.nodenv/versions/22.17.0/lib/node_modules/@anthropic-ai/
-rm -rf .claude-code-* claude-code
-ls -la .                                  # 残骸が消えたか確認
-
-npm install -g @anthropic-ai/claude-code
-nodenv rehash                             # shim 再生成
-rehash                                    # zsh のコマンドハッシュ更新
-claude --version
-```
-
-`nodenv rehash` を忘れると `~/.nodenv/shims/claude` が作られず、
-再インストールしても `command not found` のままになる。
 
 ### `command not found: claude`（頻発）
 

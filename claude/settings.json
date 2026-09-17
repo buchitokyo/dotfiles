@@ -60,6 +60,17 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/hirotoshikawabuchi/.claude/hooks/herdr-tab-title.sh'",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   },
   "tui": "fullscreen",

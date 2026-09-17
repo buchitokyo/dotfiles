@@ -51,6 +51,14 @@ fi
 if [ -d "claude" ]; then
     mkdir -p ~/.claude
     ln -snfv ${PWD}/claude/settings.json ~/.claude/settings.json
+
+    # フック（herdr が管理する herdr-agent-state.sh と同居させるためファイル単位でリンク）
+    if [ -d "claude/hooks" ]; then
+        mkdir -p ~/.claude/hooks
+        for f in claude/hooks/*; do
+            ln -snfv ${PWD}/"$f" ~/.claude/hooks/
+        done
+    fi
 fi
 
 # herdr: Claude Code 連携フック（~/.claude/hooks/herdr-agent-state.sh を生成し、
