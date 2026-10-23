@@ -105,7 +105,26 @@ return {
     "folke/todo-comments.nvim",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = { "nvim-lua/plenary.nvim" },
-    opts = {},
+    opts = function()
+      local C = require("catppuccin.palettes").get_palette()
+      return {
+        -- 色グループごとの色（キーワードはグループの色になる）
+        colors = {
+          error = { C.red }, -- FIX / FIXME / BUG
+          warning = { C.peach }, -- HACK / WARN / XXX
+          info = { C.mauve }, -- （TODO は下の keywords で上書き）
+          hint = { C.green }, -- NOTE / INFO
+          default = { C.lavender }, -- PERF
+          test = { C.pink }, -- TEST
+        },
+        -- キーワード単位で直接指定（デフォルトのキーワードとマージされる）
+        keywords = {
+          TODO = { color = "#f9e2af" },
+        },
+        -- キーワードだけ背景色付き、コロンの後ろは文字色だけ
+        highlight = { keyword = "wide", after = "fg" },
+      }
+    end,
   },
 
   -- vim-doge (ドキュメント生成)
